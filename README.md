@@ -9,3 +9,14 @@ npm run dev
 yarn
 yarn dev
 ```
+
+```
+docker build -t luksochat .
+
+docker run -d \
+    -p 3000:3000 \
+    --name luksochat \
+    -v $(pwd)/public:/todo/public \
+    -v $(pwd)/src:/todo/src \
+    luksochat
+```
