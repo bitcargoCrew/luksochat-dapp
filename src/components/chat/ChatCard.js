@@ -18,6 +18,9 @@ export function ChatCard(props) {
           <Card.Title> 
             <Image src={props.avatar} avatar />
             {props.name} 
+            <a href={"https://universalpage.dev/profiles/"+props.publicKey}>
+              <Image src="universalpage.png" style={{"width": "20px", "height": "20px", "float": "right"}}/>
+            </a>
           </Card.Title>
           <Card.Subtitle>
             {" "}

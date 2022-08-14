@@ -22,7 +22,7 @@ export function Message(props) {
             <Image src={props.avatar} avatar />
             <b>{props.sender}</b>
           </Card.Subtitle>
-          <Card.Text>{props.data}</Card.Text>
+          <Card.Text dangerouslySetInnerHTML={{__html:props.data}}></Card.Text>
         </Card.Body>
       </Card>
     </Row>

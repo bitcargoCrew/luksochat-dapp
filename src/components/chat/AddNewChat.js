@@ -11,11 +11,7 @@ export function AddNewChat(props) {
     <div
       className="AddNewChat"
       style={{
-        position: "absolute",
-        bottom: "0px",
-        padding: "10px 45px 0 45px",
-        margin: "0 95px 0 0",
-        width: "97%",
+        padding: "10px",
       }}
     >
       <Button variant="success" className="mb-2" onClick={handleShow}>
@@ -39,7 +35,7 @@ export function AddNewChat(props) {
               id="addName"
               size="text"
               type="text"
-              placeholder="Name"
+              placeholder="Your friend nick name"
             />
             <br />
           </Form.Group>
