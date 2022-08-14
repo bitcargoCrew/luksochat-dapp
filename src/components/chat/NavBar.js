@@ -5,7 +5,11 @@ import { Image } from 'semantic-ui-react'
 // This component renders the Navbar of our application
 export function NavBar(props) {
   return (
-    <Navbar bg="dark" variant="dark">
+    <Navbar 
+      style={{
+        backgroundColor: "#DCDCDC"
+      }}
+    >
       <Navbar.Brand href="#home">Chat App</Navbar.Brand>
       <Navbar.Toggle />
       <Navbar.Collapse className="justify-content-end">
@@ -17,7 +21,7 @@ export function NavBar(props) {
               props.login();
             }}
           >
-            Connect to Metamask
+            Connect to UP Extension
           </Button>
           <div
             style={{ display: props.showButton === "none" ? "block" : "none" }}

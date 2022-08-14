@@ -1,5 +1,5 @@
 import React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Container, Row, Col, Card, Form, Button } from "react-bootstrap";
 import {
   NavBar,
@@ -7,18 +7,23 @@ import {
   Message,
   AddNewChat,
   AddNewGroup,
-  AddNewFriendInGroup
+  AddNewFriendInGroup,
+  MintLSP7Token,
+  AttachAsset
 } from "./Components.js";
-import { ethers } from "ethers";
+// import { ethers } from "ethers";
 import { abi } from "./abi";
 import Web3 from 'web3';
 
-import {getProfileData, fetchProfile} from "./ReadProfileFn.js";
+import {getProfileData, fetchProfile, getLSP5ReceivedAssets} from "./ReadProfileFn.js";
 
 import chatDatabaseABI from "./chat_database.json";
 import { Image } from 'semantic-ui-react'
 
 import InputEmoji from 'react-input-emoji'
+
+import LSP7Mintable from './LSKToken/LSP7Mintable.json';
+import UniversalProfile from './LSKToken/UniversalProfile.json';
 
 // Add the contract address inside the quotes
 const CONTRACT_ADDRESS = "0xe2E9CB682DbC7b34940F9cf881910DcEdD6dE899";
@@ -41,6 +46,9 @@ export default function LskHome() {
   const [myContract, setMyContract] = useState(null);
   const [myAddress, setMyAddress] = useState(null);
 
+  const [myTimer, setMyTimer] = useState(0);
+
+
   // Save the contents of abi in a variable
   const contractABI = abi;
   let provider;
@@ -57,16 +65,16 @@ export default function LskHome() {
 
     web3 = new Web3(window.ethereum);
     web3.eth.handleRevert = true;
-    console.log(web3);
+    // console.log(web3);
 
     window.web3 = web3;
     
     let address = await web3.eth.getAccounts();
     
-    console.log(address);
+    // console.log(address);
     
     address = await web3.eth.requestAccounts();
-    console.log(address);
+    // console.log(address);
     
     address = address[0];
     
@@ -88,22 +96,15 @@ export default function LskHome() {
         chatDatabaseABI.abi,
         CONTRACT_ADDRESS
       );
-      console.log(CONTRACT_ADDRESS);
+      // console.log(CONTRACT_ADDRESS);
       
       setMyContract(contract);
       
-      console.log(contract)
-      
-      // const address = await signer.getAddress();
-      
       let present = await contract.methods.checkUserExists(address).call();
-      console.log(present);
       
       let myProfile = await getProfileData(address);
 
-      console.log(myProfile);
-
-      // console.log(await getProfileData(address);)
+      console.log(await fetchProfile(address));
 
       let username;
       if (present) {
@@ -114,11 +115,12 @@ export default function LskHome() {
           from : address
         });
       } else {
-        username = prompt("Enter a username", "Guest");
-        if (username === "") username = "Guest";
-        await contract.methods.createAccount(username).send({
-          from : address
-        });
+        // username = prompt("Enter a username", "Guest");
+        // if (username === "") username = "Guest";
+        // await contract.methods.createAccount(username).send({
+        //   from : address
+        // });
+        console.log("You do not have universal profile yet, please create one");
       }
       
       if (myProfile && myProfile.profileImage && myProfile.profileImage[0]) {
@@ -128,6 +130,7 @@ export default function LskHome() {
       setMyPublicKey(address);
       setShowConnectButton("none");
       // fnRandomGroupId();
+
     } catch (err) {
       console.log(err);
       alert("CONTRACT_ADDRESS not set properly!");
@@ -137,15 +140,23 @@ export default function LskHome() {
     // }
   }
 
-  // Check if the Metamask connects
-  async function connectToMetamask() {
-    try {
-      await window.ethereum.enable();
-      return true;
-    } catch (err) {
-      return false;
-    }
-  }
+  // async function updateMyAssetList() {
+  //   console.log("updateMyAssetList");
+  //   console.log(myPublicKey);
+  //   const myAls = await getLSP5ReceivedAssets(myPublicKey);
+  //   console.log(myAls);
+  //   setMyAssetList(myAls);
+  // }
+
+  // // Check if the Metamask connects
+  // async function connectToMetamask() {
+  //   try {
+  //     await window.ethereum.enable();
+  //     return true;
+  //   } catch (err) {
+  //     return false;
+  //   }
+  // }
 
   // Add a friend to the users' Friends List
   async function addChat(name, publicKey) {
@@ -158,6 +169,9 @@ export default function LskHome() {
       }
       try {
         console.log("myAddress:"+myAddress+ " > "+present);
+
+        var frProfile = await getProfileData(publicKey);
+
         if (name) {
           console.log("name:"+name);
           await myContract.methods.addFriend(publicKey, name).send({
@@ -169,8 +183,19 @@ export default function LskHome() {
           await myContract.methods.addDefaultFriend(publicKey).send({
             from : myAddress
           });
+          name = frProfile.name;
         }
-        const frnd = { name: name, publicKey: publicKey, userType : 1 };
+
+        var frnd = { name: name, publicKey: publicKey, userType : 1 };
+
+        frnd.profile = frProfile;
+        var frAvatar = "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/default-avatar.png";
+        if (frProfile && frProfile.profileImage && frProfile.profileImage[0]) {
+          frAvatar = (frProfile.profileImage[0].url).replace("ipfs://", "https://ipfs.io/ipfs/");
+        }
+        frnd.avatar = frAvatar;
+
+        // console.log(friends.concat(frnd));
         setFriends(friends.concat(frnd));
       } catch (err) {
         console.log(err);
@@ -254,12 +279,9 @@ export default function LskHome() {
   }
 
   function getFriendInfor(friendsPublicKey) {
-    console.log("getFriendInfor:" + friendsPublicKey);
-    console.log(friends);
+    // console.log("getFriendInfor:" + friendsPublicKey);
     for (var i in friends) {
       if (friends[i].publicKey === friendsPublicKey) {
-        console.log(friends[i]);
-        console.log(friends[i].name);
         return friends[i];
       }      
     }
@@ -269,6 +291,11 @@ export default function LskHome() {
 
   // Fetch chat messages with a friend
   async function getMessage(friendsPublicKey) {
+    // console.log("getMessage:"+friendsPublicKey);
+    // if (myTimer) {
+    //   clearTimeout(myTimer);
+    //   setMyTimer(0);
+    // }
     let nickname;
     let userType;
     let avatar;
@@ -296,7 +323,12 @@ export default function LskHome() {
 
     setActiveChat({ friendname: nickname, publicKey: friendsPublicKey, userType: userType, avatar });
     setActiveChatMessages(messages);
-    scrollToBottom();
+    // scrollToBottom();
+
+    // let timer = setTimeout(() => {
+    //   getMessage(friendsPublicKey);
+    // }, 3000);
+    // setMyTimer(timer);
   }
 
   async function testEncriptData() {
@@ -411,7 +443,7 @@ export default function LskHome() {
           var frProfile = await getProfileData(friendList[f].publicKey);
           friendList[f].profile = frProfile;
           var frAvatar = "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/default-avatar.png";
-          if (frProfile && frProfile.profileImage) {
+          if (frProfile && frProfile.profileImage && frProfile.profileImage[0]) {
             frAvatar = (frProfile.profileImage[0].url).replace("ipfs://", "https://ipfs.io/ipfs/");
           }
           friendList[f].avatar = frAvatar;
@@ -423,7 +455,16 @@ export default function LskHome() {
       }
       setFriends(friendList);
     }
-    loadFriends();
+    if (myPublicKey) {
+      loadFriends();
+    }
+
+    // const interval = setInterval(() => {
+    //   console.log('This will run every second!');
+    //   // console.log(activeChat);
+    // }, 1000);
+    // return () => clearInterval(interval);
+
   }, [myPublicKey, myContract]);
 
   // Makes Cards for each Message
@@ -435,7 +476,7 @@ export default function LskHome() {
           margin = "15%";
           sender = "You";
         }
-        // console.log("msg:"+index + " "+activeChatMessages);
+        // console.log("msg:"+index + " ");
         return (
           <Message
             marginLeft={margin}
@@ -456,25 +497,91 @@ export default function LskHome() {
             publicKey={friend.publicKey}
             name={friend.name}
             avatar={friend.avatar}
-            getMessages={(key) => getMessage(key)}
+            getMessages={async (key) => {
+              await getMessage(key);
+              scrollToBottom();
+            }}
           />
         );
       })
     : null;
   
-  const onSendMsgText = function(text) {
-    sendMessage(text);
+  const onSendMsgText = async function(text) {
+    await sendMessage(text);
     setMsgText("");
   }
   
   const refreshActiveMsg = function() {
-    if (activeChat && activeChat.publicKey) {
-      getMessage(activeChat.publicKey);
-    }
+      if (activeChat && activeChat.publicKey) {
+        // console.log("refreshActiveMsg");
+        getMessage(activeChat.publicKey);
+      }
+  }
+
+  useInterval(() => {
+    refreshActiveMsg();
+  }, 3000)
+
+  function useInterval(callback, delay) {
+    const savedCallback = useRef();
+  
+    // Remember the latest callback.
+    useEffect(() => {
+      savedCallback.current = callback;
+    }, [callback]);
+  
+    // Set up the interval.
+    useEffect(() => {
+      function tick() {
+        savedCallback.current();
+      }
+      if (delay !== null) {
+        let id = setInterval(tick, delay);
+        return () => clearInterval(id);
+      }
+    }, [delay]);
   }
 
   const scrollToBottom = function() {
     messagesEnd.scrollIntoView({ behavior: "smooth" });
+  }
+
+  // const fnMintNewLSP7Token = async function(tokenName, amount) {
+  //   // create an instance
+  //   const myToken = new window.web3.eth.Contract(LSP7Mintable.abi, {
+  //     gas: 5_000_000,
+  //     gasPrice: '1000000000',
+  //   });
+
+  //   // deploy the token contract
+  //   const myDeployedToken = await myToken.deploy({
+  //       data: LSP7Mintable.bytecode,
+  //       arguments: [
+  //         tokenName || "LS7", // token name
+  //         'LSP7', // token symbol
+  //         myPublicKey, // new owner, who will mint later
+  //         false, // isNonDivisible = TRUE, means NOT divisible, decimals = 0)
+  //       ]
+  //     })
+  //     .send({
+  //       from: myPublicKey,
+  //     });
+    
+  //   await myDeployedToken.methods.mint(myPublicKey, amount, false, '0x').send({
+  //     from: myPublicKey,
+  //   });
+  // }
+
+  function divGroupCreate() {
+    if (myPublicKey) {
+      return (<AddNewGroup
+        randomAddress={  window.web3.utils.randomHex(20) }
+        myContract={myContract}
+        addHandler={(name, publicKey) => addGroup(name, publicKey)}
+      />)
+    } else {
+      return (<></>)
+    }
   }
 
   return (
@@ -490,7 +597,7 @@ export default function LskHome() {
       />
       <Row>
         {/* Here the friends list is shown */}
-        <Col style={{ paddingRight: "0px", borderRight: "2px solid #000000" }}>
+        <Col style={{ paddingRight: "0px", borderRight: "1px solid grey" }}>
           <div
             style={{
               backgroundColor: "#DCDCDC",
@@ -506,20 +613,20 @@ export default function LskHome() {
                   marginLeft: "15px",
                 }}
               >
-                <Card.Header>Chats</Card.Header>
+                <Card.Header>Friend list</Card.Header>
               </Card>
             </Row>
-            {chats}
-            <div>
+            <div
+              style={{ height: "400px", overflowY: "auto", paddingTop: "2mm" }}
+            >
+              {chats}
+            </div>
+            <div style={{ display: "flex" }}>
               <AddNewChat
                 myContract={myContract}
                 addHandler={(name, publicKey) => addChat(name, publicKey)}
               />
-              {/* <AddNewGroup
-                randomAddress={ window.web3 ? window.web3.utils.randomHex(20) : ""}
-                myContract={myContract}
-                addHandler={(name, publicKey) => addGroup(name, publicKey)}
-              /> */}
+              {divGroupCreate()}
             </div>
           </div>
         </Col>
@@ -540,7 +647,7 @@ export default function LskHome() {
                     ? <><Image src={activeChat.avatar} avatar /> {activeChat.friendname} : {activeChat.publicKey}</>
                     : <></>
                   }
-                  <Button
+                  {/* <Button
                     style={{ float: "right" }}
                     variant="warning"
                     onClick={() => {
@@ -548,12 +655,12 @@ export default function LskHome() {
                     }}
                   >
                     Refresh
-                  </Button>
+                  </Button> */}
                   {/* <Button
                     style={{ float: "right" }}
                     variant="success"
                     onClick={async() => {
-                      testEncriptData();
+                      await updateMetadata(myPublicKey, "0x31bD08599E50882e76E979EDba2f2fce5aeA3d00", "0x3030303031000000000000000000000000000000000000000000000000000000", JSON.stringify({"description" : "aaa"}));
                     }}
                   >
                     Test
@@ -583,35 +690,32 @@ export default function LskHome() {
             <div
               className="SendMessage"
               style={{
-                borderTop: "2px solid black",
+                borderTop: "1px solid gray",
                 position: "relative",
                 bottom: "0px",
-                padding: "10px 45px 0 45px",
+                padding: "10px 10px 0 10px",
                 margin: "0 95px 0 0",
                 width: "97%",
               }}
             >
               <Form>
                 <Form.Row className="align-items-center">
-                  {/* <Col xs={9}> */}
+                  <Col xs={11}>
                     <InputEmoji
                       placeholder="Send Message"
                       value={msgText}
                       onChange={setMsgText}
                       onEnter={onSendMsgText}
                     />
-                  {/* </Col> */}
-                  {/* <Col>
-                    <Button
-                      className="mb-2"
-                      style={{ float: "right" }}
-                      onClick={() => {
-                        onSendMsgText(msgText)
-                      }}
-                    >
-                      Send
-                    </Button>
-                  </Col> */}
+                  </Col>
+                  <Col xs={1}>
+                    <AttachAsset
+                      name={myName}
+                      address={myPublicKey}
+                      currActivFriend={activeChat}
+                      sendNoti={onSendMsgText}
+                    />
+                  </Col>
                 </Form.Row>
               </Form>
             </div>
