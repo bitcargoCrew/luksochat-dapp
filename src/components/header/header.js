@@ -1,81 +1,115 @@
 /** @jsx jsx */
-import { jsx, Container, Flex, Button } from 'theme-ui';
+import { jsx, Container, Flex, Button, Box } from 'theme-ui';
 import { keyframes } from '@emotion/core';
-import { Link } from 'react-scroll';
+import { IoIosUnlock } from 'react-icons/io';
+import { NavLink, Link } from 'components/link';
+import { Link as ScrollLink, animateScroll as scroll } from 'react-scroll';
 import Logo from 'components/logo';
-import LogoDark from 'assets/logo.svg';
-import MobileDrawer from './mobile-drawer';
+
+import { DrawerProvider } from 'contexts/drawer/drawer.provider';
+import MobileDrawer from './mobileDrawer';
 import menuItems from './header.data';
 
 export default function Header({ className }) {
   return (
-      <h1>Header</h1>
+    <DrawerProvider>
+      <header sx={styles.header} className={className}>
+        <Container sx={styles.container}>
+          <Logo />
+
+          <Flex as="nav" sx={styles.nav}>
+            {menuItems.map(({ path, label }, i) => (
+              <ScrollLink
+                activeClass="active"
+                sx={styles.nav.navLink}
+                to={path}
+                spy={true}
+                smooth={true}
+                offset={-70}
+                duration={500}
+                key={i}
+              >
+                {label}
+              </ScrollLink>
+            ))}
+          </Flex>
+
+          <Link
+            path="/"
+            ml={2}
+            label="Log in"
+            sx={styles.headerBtn}
+            variant="buttons.primary"
+          />
+
+          <MobileDrawer />
+        </Container>
+      </header>
+    </DrawerProvider>
   );
 }
 
-const positionAnim = keyframes`
-  from {
-    position: fixed;
-    opacity: 1;
-  }
-
-  to {
-    position: absolute;
-    opacity: 1;
-    transition: all 0.4s ease;
-  }
-`;
-
 const styles = {
+  headerBtn: {
+    backgroundColor: 'rgba(0,0,0,0)',
+    fontSize: '18px',
+    fontWeight: 'bold',
+    letterSpacing: '-0.16px',
+    borderRadius: '5px',
+    border: '2px solid',
+    borderColor: 'primary',
+    color: 'primary',
+    padding: '8px 24px',
+    display: ['none', null, null, null, 'inline-block'],
+    ml: ['0', null, null, 'auto', '0'],
+    mr: ['0', null, null, '20px', '0'],
+    '&:hover': {
+      color: '#fff',
+    },
+  },
   header: {
-    color: 'text',
-    fontWeight: 'body',
-    py: 4,
+    color: 'text_white',
+    fontWeight: 'normal',
+    py: '25px',
     width: '100%',
-    position: 'absolute',
+    position: 'fixed',
     top: 0,
     left: 0,
     backgroundColor: 'transparent',
     transition: 'all 0.4s ease',
-    animation: `${positionAnim} 0.4s ease`,
-    '.donate__btn': {
-      flexShrink: 0,
-      mr: [15, 20, null, null, 0],
-      ml: ['auto', null, null, null, 0],
-    },
+
     '&.sticky': {
-      position: 'fixed',
       backgroundColor: 'background',
-      color: '#000000',
+      color: 'text',
+      py: '15px',
       boxShadow: '0 1px 2px rgba(0, 0, 0, 0.06)',
-      py: 3,
-      'nev > a': {
-        color: 'text',
-      },
     },
   },
   container: {
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    width: [null, null, null, null, null, null, '1390px'],
+    '@media screen and (max-width: 960px)': {
+      justifyContent: 'space-between',
+    },
   },
   nav: {
     mx: 'auto',
-    display: 'none',
-    '@media screen and (min-width: 1024px)': {
-      display: 'block',
+    '@media screen and (max-width: 960px)': {
+      display: 'none',
     },
-    a: {
-      fontSize: 2,
-      fontWeight: 'body',
-      px: 5,
+    navLink: {
+      fontSize: '18px',
+      color: '000000',
+      fontWeight: '400',
       cursor: 'pointer',
       lineHeight: '1.2',
-      transition: 'all 0.15s',
-      '&:hover': {
-        color: 'primary',
+      mr: '48px',
+      transition: '500ms',
+      ':last-child': {
+        mr: '0',
       },
-      '&.active': {
+      '&:hover, &.active': {
         color: 'primary',
       },
     },

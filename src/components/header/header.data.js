@@ -9,10 +9,10 @@ export default [
   },
   {
     path: 'pricing',
-    label: 'Pricing',
+    label: 'Chat DApp',
   },
   {
     path: 'testimonial',
-    label: 'Testimonial',
+    label: 'Roadmap',
   },
 ];

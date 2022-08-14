@@ -19,13 +19,13 @@ export default function Home() {
   return (
     <ThemeProvider theme={theme}>
         <Layout>
-          <SEO title="NextJS Landing Page" />
+          <SEO title="Bitvia Chat DApp" />
           <Banner />
           <KeyFeature /> 
           <ServiceSection />
           <Feature /> 
           <Link href="/chat">
-          <a>Go go chat here</a>
+          <a>Go to App</a>
         </Link>
           <WorkFlow />
           <Package />

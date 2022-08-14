@@ -1,9 +1,17 @@
 /** @jsx jsx */
 import { jsx, Image } from 'theme-ui';
 import { Link } from 'components/link';
+import logo from 'assets/logo.svg';
 
-export default function Logo({ src, ...rest }) {
+export default function Logo() {
   return (
-    <h1>Logo</h1>
+    <Link
+      path="/"
+      sx={{
+        variant: 'links.logo',
+      }}
+    >
+      <Image src={logo} sx={{ display: 'flex' }} alt="startup landing logo" />
+    </Link>
   );
 }
