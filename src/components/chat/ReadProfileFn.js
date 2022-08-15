@@ -94,7 +94,7 @@ export async function getLSP5ReceivedAssets(address) {
     var symbol = fullProfileStrc["LSP4TokenSymbol"];
     var name = fullProfileStrc["LSP4TokenName"];
     var icon = "https://upload.wikimedia.org/wikipedia/commons/2/24/NFT_Icon.png";
-    if (fullProfileStrc["LSP4Metadata"]) {
+    if (fullProfileStrc["LSP4Metadata"] && fullProfileStrc["LSP4Metadata"].LSP4Metadata && fullProfileStrc["LSP4Metadata"].LSP4Metadata.icon) {
       icon = fullProfileStrc["LSP4Metadata"].LSP4Metadata.icon[0].url.replace("ipfs://", "https://ipfs.io/ipfs/");
     }
 
