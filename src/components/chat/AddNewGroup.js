@@ -1,12 +1,15 @@
 import React from "react";
 import { useState } from "react";
-import { Button, Modal, Form } from "react-bootstrap";
+import { Button, Modal, Form, Checkbox } from "react-bootstrap";
 
 // This Modal help Add a new friend
 export function AddNewGroup(props) {
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+
+  const [publicKey, setPublicKey] = useState(props.randomAddress);
+
   return (
     <div
       className="AddNewChat"
@@ -29,7 +32,8 @@ export function AddNewGroup(props) {
               size="text"
               type="text"
               placeholder="Enter Friends Public Key"
-              value={props.randomAddress}
+              value={publicKey}
+              onChange={(e) => setPublicKey(e.target.value)}
             />
             <br />
             <Form.Control
@@ -39,6 +43,13 @@ export function AddNewGroup(props) {
               type="text"
               placeholder="Name"
             />
+            <br />
+            <Form.Check
+              label="is this a group of asset owner"
+              type="checkbox"
+              id="isAssetGroup"
+            />
+
             <br />
           </Form.Group>
         </Modal.Body>
@@ -51,7 +62,8 @@ export function AddNewGroup(props) {
             onClick={() => {
               props.addHandler(
                 document.getElementById("addName").value,
-                document.getElementById("addPublicKey").value
+                document.getElementById("addPublicKey").value,
+                document.getElementById("isAssetGroup").checked
               );
               handleClose();
             }}

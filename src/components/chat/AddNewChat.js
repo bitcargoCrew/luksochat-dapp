@@ -11,7 +11,7 @@ export function AddNewChat(props) {
     <div
       className="AddNewChat"
       style={{
-        padding: "10px",
+        padding: "10px 10px 10px 18px",
       }}
     >
       <Button variant="success" className="mb-2" onClick={handleShow}>

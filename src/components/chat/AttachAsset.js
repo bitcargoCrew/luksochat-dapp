@@ -2,6 +2,7 @@ import React from "react";
 import { useState } from "react";
 import { Button, Modal, Form, ListGroup, Tabs, Tab, Image, Row, Col, Card } from "react-bootstrap";
 import {getLSP5ReceivedAssets, sendLSP7Token, getBalanceOf, sendLYX, createAndMintLSP7Token, createAndMintLSP8Token, sendLSP8Token} from "./ReadProfileFn.js";
+// import {ReactComponent as AttachLogo} from './icons/attach.svg';
 
 import {
   MintLSP7Token, MintLSP8Token
@@ -61,7 +62,7 @@ export function AttachAsset(props) {
       var tokenId = selectedToken.id;
       const tx = await sendLSP8Token(fromAddr, toAddr, tokenId, tokenAddress);
 
-      await props.sendNoti(props.name+" has just sent 1 "+selectedToken.name+" (LSK8Token) to "+props.currActivFriend.friendname+" at <a href='https://explorer.execution.l16.lukso.network/tx/"+tx.transactionHash+"'>txhash</a>");
+      await props.sendNoti(props.name+" has just sent an NFT "+selectedToken.name+" (LSK8Token) to "+props.currActivFriend.friendname+" at <a href='https://explorer.execution.l16.lukso.network/tx/"+tx.transactionHash+"'>txhash</a>");
       setShow(false);
 
     }
@@ -93,13 +94,14 @@ export function AttachAsset(props) {
         padding: "10px",
       }}
     >
-      <Button 
+      {/* <Button 
         variant="success" className="mb-2" onClick={handleShow}
         disabled={ !(props.currActivFriend.publicKey) }
-        >
-        Attach
-      </Button>
-      <Modal show={show} onHide={handleClose}>
+        > */}
+        <Image src="attach.svg" avatar alt="React Logo" onClick={handleShow} disabled={ !(props.currActivFriend.publicKey) } ></Image>
+        {/* // Attach */}
+      {/* // </Button> */}
+      <Modal show={show && props.currActivFriend.publicKey} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title> Attach and send to  {props.currActivFriend.friendname} </Modal.Title>
         </Modal.Header>
@@ -137,7 +139,10 @@ export function AttachAsset(props) {
                       <ListGroup.Item 
                         key={als.address}
                         active={als.address == selectedToken.address}
-                        onClick={()=>{setSelectedToken(als)}}
+                        onClick={()=>{
+                          navigator.clipboard.writeText(als.address);
+                          setSelectedToken(als);
+                        }}
                       >
                         {als.name} : {als.balance} {als.symbol} 
                       </ListGroup.Item>            
@@ -165,43 +170,17 @@ export function AttachAsset(props) {
           </Tab>
           <Tab eventKey="nft" title="NFT">
             <div style={{"paddingTop": "10px"}}>
-              {/* <ListGroup
-                  activeKey={selectedToken.address}
-              >
-                { myAssetList.map( (als) => 
-                  { 
-                    if (als.type=="LSP8") {
-                      return (<>
-                      <ListGroup.Item 
-                        key={als.address}
-                        active={als.address == selectedToken.address}
-                        onClick={()=>{setSelectedToken(als)}}
-                      >
-                        <Image src={als.icon} avatar />
-                        <span>{als.name} : {als.balance} {als.symbol} </span>
-                      </ListGroup.Item>            
-                      </>)
-                    }
-                }) }
-              </ListGroup> */}
-              {/* <br/>
-              <Form.Control
-                  required
-                  id="amount"
-                  size="text"
-                  type="text"
-                  placeholder="Enter Amount"
-                  defaultValue={amount}
-                  onChange={(e) => {
-                    setAmount(e.target.value);
-                  }}
-                /> */}
               <Row xs={1} md={3} className="g-4">
                 {  
                   myAssetList.map( (als) => {
                     if (als.type=="LSP8") {
                       return (<Col>
-                        <Card border={selectedToken.address==als.address ? "primary" : ""} onClick={(e)=>{setSelectedToken(als)}}>
+                        <Card 
+                          border={selectedToken.address==als.address && selectedToken.id==als.id ? "primary" : ""} 
+                          onClick={(e)=>{
+                            navigator.clipboard.writeText(als.address);
+                            setSelectedToken(als)
+                          }}>
                           <Card.Img variant="top" src={als.icon} />
                           <Card.Body style={{"textAlign" : "center"}}>
                             <Card.Title >{als.symbol}</Card.Title>

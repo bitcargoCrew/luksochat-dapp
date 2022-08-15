@@ -10,10 +10,11 @@ import {
   AddNewGroup,
   AddNewFriendInGroup,
   AttachAsset,
-  ModelAlert
+  ModelAlert,
+  ShareModal
 } from "./Components.js";
 // import { ethers } from "ethers";
-import { abi } from "./abi";
+// import { abi } from "./abi";
 import Web3 from 'web3';
 
 import {getProfileData, fetchProfile, getLSP5ReceivedAssets} from "./ReadProfileFn.js";
@@ -27,7 +28,7 @@ import LSP7Mintable from './LSKToken/LSP7Mintable.json';
 import UniversalProfile from './LSKToken/UniversalProfile.json';
 
 // Add the contract address inside the quotes
-const CONTRACT_ADDRESS = "0xe2E9CB682DbC7b34940F9cf881910DcEdD6dE899";
+const CONTRACT_ADDRESS = "0xF1F66dE3E1DBAB98a541225bCd0682Cb37a442D6";
 
 export default function LskHome() {
   const [friends, setFriends] = useState(null);
@@ -35,6 +36,8 @@ export default function LskHome() {
   const [myAvatar, setMyAvatar] = useState("");
   const [myPublicKey, setMyPublicKey] = useState(null);
   const [ msgText, setMsgText ] = useState('')
+  const [ searchText, setSearchText ] = useState('')
+
   const [ msgPlaceholder, setMsgPlaceholder ] = useState('Type a message');
 
   const [messagesEnd, setMyMessagesEnd] = useState(null);
@@ -56,9 +59,9 @@ export default function LskHome() {
 
 
   // Save the contents of abi in a variable
-  const contractABI = abi;
-  let provider;
-  let signer;
+  // const contractABI = abi;
+  // let provider;
+  // let signer;
   let web3;
 
   async function logout() {
@@ -66,6 +69,12 @@ export default function LskHome() {
     setMyName(null);
     setActiveChatMessages(null);
     setShowConnectButton("block");
+    setFriends(null);
+    setActiveChat({
+      friendname: null,
+      publicKey: null,
+      userType: 1
+    });
   }
   // Login to Metamask and check the if the user exists else creates one
   async function login() {
@@ -80,7 +89,7 @@ export default function LskHome() {
   }
   
   async function autoLogin() {
-
+    console.log("autoLogin");
     web3 = new Web3(window.ethereum);
     web3.eth.handleRevert = true;
     // console.log(web3);
@@ -102,8 +111,8 @@ export default function LskHome() {
     setMyAddress(address);
     
     // setConnected(address, "browserExtension");
-    console.log("done");
-    console.log(address);
+    // console.log("done");
+    // console.log(address);
     
     // return;
 
@@ -150,11 +159,11 @@ export default function LskHome() {
       setMyName(username);
       setShowConnectButton("none");
       // fnRandomGroupId();
-      await makeFriendViaInvitationLink();
+      // await makeFriendViaInvitationLink();
     } catch (err) {
       console.log(err);
       // alert("CONTRACT_ADDRESS not set properly!");
-      setShowAlert({show: true, title: "ERROR", content: err.toString()});
+      setShowAlert({show: true, title: "ERROR", content: err.message});
     }
     // } else {
     //   alert("Couldn't connect to Metamask");
@@ -162,9 +171,9 @@ export default function LskHome() {
   }
 
   async function makeFriendViaInvitationLink() {
-    // console.log(router.query);
-    if (router.query && router.query.friend) {
-      await addChat(undefined, router.query.friend)
+    if (router.query && router.query.invite) {
+      console.log("makeFriendViaInvitationLink");
+      await addChat(undefined, router.query.invite);
     }
   }
 
@@ -201,7 +210,7 @@ export default function LskHome() {
         console.log("myAddress:"+myAddress+ " > "+present);
 
         var frProfile = await getProfileData(publicKey);
-
+        var userType = 1;
         if (name) {
           console.log("name:"+name);
           await myContract.methods.addFriend(publicKey, name).send({
@@ -214,9 +223,14 @@ export default function LskHome() {
             from : myAddress
           });
           name = frProfile.name;
+          if (!name) {
+            //May be this is a group
+            name = await myContract.methods.getUsername(publicKey).call();
+            userType = 2;
+          }
         }
 
-        var frnd = { name: name, publicKey: publicKey, userType : 1 };
+        var frnd = { name: name, publicKey: publicKey, userType : userType };
 
         frnd.profile = frProfile;
         var frAvatar = "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/default-avatar.png";
@@ -244,24 +258,23 @@ export default function LskHome() {
   }
 
   // Add a friend to the users' Friends List
-  async function addGroup(name, publicKey) {
-    console.log(myContract);
+  async function addGroup(name, publicKey, isAssetGroup) {
     try {
       // publicKey = "0x9a5aaD239C4485861B05051bFB506EfdbEe92b25";
       try {
-        console.log("myAddress:"+myAddress+ " > "+ publicKey);
-        
-        console.log(  await myContract.methods.checkUserExists(publicKey).call())
-
-        console.log("name:"+name);
-        await myContract.methods.createGroup(publicKey, name).send({
+        console.log("myAddress:"+myAddress+ " > "+ name, publicKey, isAssetGroup);
+        console.log(myContract.methods);
+        await myContract.methods.createGroup(publicKey, name, isAssetGroup).send({
           from : myAddress
         }).catch((err) => {
           console.log(err);
+          setShowAlert({show: true, title: "INFO", content: "Please check again your input or you have no right to create this group"});
+
           return;
          });
 
-        const frnd = { name: name, publicKey: publicKey, userType : 2 };
+        var frAvatar = "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/default-avatar.png";
+        const frnd = { name: name, publicKey: publicKey, userType : 2,  avatar: frAvatar};
         setFriends(friends.concat(frnd));
       } catch (err) {
         console.log(err);
@@ -288,8 +301,8 @@ export default function LskHome() {
 
       } catch (err) {
         console.log(err);
-        console.log(err.message);
-        setShowAlert({show: true, title: "WARNING", content: "Your friend is already in the group"});
+        // console.log(err.message);
+        setShowAlert({show: true, title: "ERROR", content: "We can not add your friend, please check with the group admin"});
       }
     } catch (err) {
       console.log(err);
@@ -324,11 +337,11 @@ export default function LskHome() {
 
   // Fetch chat messages with a friend
   async function getMessage(friendsPublicKey) {
-    // console.log("getMessage:"+friendsPublicKey);
-    // if (myTimer) {
-    //   clearTimeout(myTimer);
-    //   setMyTimer(0);
-    // }
+ 
+    if (!friends) {
+      return;
+    }
+
     let nickname;
     let userType;
     let avatar;
@@ -356,12 +369,7 @@ export default function LskHome() {
 
     setActiveChat({ friendname: nickname, publicKey: friendsPublicKey, userType: userType, avatar });
     setActiveChatMessages(messages);
-    // scrollToBottom();
 
-    // let timer = setTimeout(() => {
-    //   getMessage(friendsPublicKey);
-    // }, 3000);
-    // setMyTimer(timer);
   }
 
   async function testEncriptData() {
@@ -487,17 +495,23 @@ export default function LskHome() {
       friendList = [];
     }
     setFriends(friendList);
+    // console.log(friends)
+    // makeFriendViaInvitationLink();
   }
 
   useEffect(() => {
-    if (myPublicKey!="logout") {
-      if (myPublicKey && myContract) {
-        loadFriends();
-      } else {
-        autoLogin();
+    console.log("useEffect");
+    if (myContract) {
+      console.log("before load friends");
+      loadFriends();
+      console.log(friends);
+      if (friends) {
+        makeFriendViaInvitationLink();
       }
+    } else {
+      autoLogin();
     }
-  }, [myPublicKey, myContract]);
+  }, [myContract, myName]);
 
   // Makes Cards for each Message
   const Messages = activeChatMessages
@@ -524,19 +538,27 @@ export default function LskHome() {
   // Displays each card
   const chats = friends
     ? friends.map((friend) => {
-        return (
-          <ChatCard
-            publicKey={friend.publicKey}
-            name={friend.name}
-            avatar={friend.avatar}
-            getMessages={async (key) => {
-              await getMessage(key);
-              scrollToBottom();
-            }}
-          />
-        );
+        if (friend.name.toLowerCase().indexOf(searchText.toLowerCase())>-1) {
+          return (
+            <ChatCard
+              publicKey={friend.publicKey}
+              name={friend.name}
+              avatar={friend.avatar}
+              getMessages={async (key) => {
+                await getMessage(key);
+                scrollToBottom();
+              }}
+            />
+          );
+        }
       })
     : null;
+  
+  async function findNotInChat() {
+    if (searchText) {
+      let present = await contract.methods.checkUserExists(address).call();
+    }
+  }
   
   const onSendMsgText = async function(text) {
     setMsgText("");
@@ -609,11 +631,15 @@ export default function LskHome() {
       return (<AddNewGroup
         randomAddress={  window.web3.utils.randomHex(20) }
         myContract={myContract}
-        addHandler={(name, publicKey) => addGroup(name, publicKey)}
+        addHandler={(name, publicKey, isAssetGroup) => addGroup(name, publicKey, isAssetGroup)}
       />)
     } else {
       return (<></>)
     }
+  }
+
+  function shareGroup(e) {
+
   }
 
   return (
@@ -627,6 +653,7 @@ export default function LskHome() {
         
         username={myName}
         avatar={myAvatar}
+        publicKey={myPublicKey}
         logout={async () => logout()}
         login={async () => login()}
         showButton={showConnectButton}
@@ -649,15 +676,23 @@ export default function LskHome() {
                   marginLeft: "15px",
                 }}
               >
-                <Card.Header>Friend list</Card.Header>
+                <Card.Header>
+                  <Form.Control
+                    required
+                    size="text"
+                    type="text"
+                    placeholder="Search or start new chat"
+                    onChange={(e)=>{setSearchText(e.target.value)}}
+                  />
+                </Card.Header>
               </Card>
             </Row>
             <div
-              style={{ height: "400px", overflowY: "auto", paddingTop: "2mm" }}
+              style={{ height: "405px", overflowY: "auto", paddingTop: "2mm" }}
             >
               {chats}
             </div>
-            <div style={{ display: "flex" }}>
+            <div style={{ display: "flex", paddingTop: "10px" }}>
               <AddNewChat
                 myContract={myContract}
                 addHandler={(name, publicKey) => addChat(name, publicKey)}
@@ -680,34 +715,24 @@ export default function LskHome() {
                 <Card.Header>
                   {
                     activeChat.publicKey 
-                    ? <><Image src={activeChat.avatar} avatar /> {activeChat.friendname} : {activeChat.publicKey}</>
-                    : <></>
-                  }
-                  {/* <Button
-                    style={{ float: "right" }}
-                    variant="warning"
-                    onClick={() => {
-                      refreshActiveMsg();
-                    }}
-                  >
-                    Refresh
-                  </Button> */}
-                  {/* <Button
-                    style={{ float: "right" }}
-                    variant="success"
-                    onClick={async() => {
-                      await updateMetadata(myPublicKey, "0x31bD08599E50882e76E979EDba2f2fce5aeA3d00", "0x3030303031000000000000000000000000000000000000000000000000000000", JSON.stringify({"description" : "aaa"}));
-                    }}
-                  >
-                    Test
-                  </Button> */}
-                  {
-                    activeChat.userType == 2 
-                    ? <AddNewFriendInGroup
-                      myContract={myContract}
-                      addHandler={(publicKey) => addNewFriendInGroup(publicKey)}
-                      />
-                    : <></>
+                    ? <div style={{height: "33px", display: "flex"}}>
+                        <div>
+                          <Image src={activeChat.avatar} avatar /> 
+                          <span style={{padding: "3px"}}>{activeChat.friendname} : {activeChat.publicKey}</span>
+                        </div>
+                        {
+                          activeChat.userType == 2 
+                          ? <div style={{marginLeft: "auto", marginRight: "12px", "display" : "inline-flex" }}>
+                              <ShareModal url={window.location.href + "?invite=" +activeChat.publicKey} />
+                              <AddNewFriendInGroup
+                              myContract={myContract}
+                              addHandler={(publicKey) => addNewFriendInGroup(publicKey)}
+                              />
+                          </div>
+                          : <></>
+                        }
+                      </div>
+                    : <><div style={{height: "33px"}}></div></>
                   }
                 </Card.Header>
               </Card>

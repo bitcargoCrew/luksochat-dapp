@@ -26,7 +26,7 @@ export function NavBar(props) {
           <div
             style={{ display: props.showButton === "none" ? "block" : "none" }}
           >
-            <a href="#" style={{ "padding-right" : "10px" }}>
+            <a  href={"https://universalpage.dev/profiles/"+props.publicKey} style={{ "padding-right" : "10px" }}>
               <Image src={props.avatar} avatar />
               {props.username}
             </a>

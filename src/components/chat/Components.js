@@ -14,3 +14,6 @@ export { ChatCard } from "./ChatCard";
 export { AttachAsset } from "./AttachAsset";
 
 export {ModelAlert} from "./ModelAlert"
+export {ShareModal} from "./ShareModal"
+
+

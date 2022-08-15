@@ -1,6 +1,6 @@
 import React from "react";
 import { useState } from "react";
-import { Button, Modal, Form } from "react-bootstrap";
+import { Button, Modal, Form, Image } from "react-bootstrap";
 
 // This Modal help Add a new friend
 export function AddNewFriendInGroup(props) {
@@ -10,9 +10,11 @@ export function AddNewFriendInGroup(props) {
   return (
     <div
     >
-      <Button variant="success" className="mb-2" onClick={handleShow}>
+      {/* <Button variant="success" className="mb-2" onClick={handleShow} style={{float : "right"}}>
         + New Friend for Group
-      </Button>
+      </Button> */}
+      <Image src="plususer.svg" onClick={handleShow} ></Image>
+
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title> Add New Friend for Group </Modal.Title>
