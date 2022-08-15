@@ -28,7 +28,7 @@ import LSP7Mintable from './LSKToken/LSP7Mintable.json';
 import UniversalProfile from './LSKToken/UniversalProfile.json';
 
 // Add the contract address inside the quotes
-const CONTRACT_ADDRESS = "0xF1F66dE3E1DBAB98a541225bCd0682Cb37a442D6";
+const CONTRACT_ADDRESS = "0xf13cF1aF062C60D543D51166A3bB7684b4F59ec0";
 
 export default function LskHome() {
   const [friends, setFriends] = useState(null);
@@ -42,6 +42,7 @@ export default function LskHome() {
 
   const [messagesEnd, setMyMessagesEnd] = useState(null);
   const [showAlert, setShowAlert] = useState({show : false, title: "Error", content: "Error"});
+  const [ allUsers, setAllUsers ] = useState([])
 
   const router = useRouter()
 
@@ -495,6 +496,9 @@ export default function LskHome() {
       friendList = [];
     }
     setFriends(friendList);
+
+    setAllUsers(await myContract.methods.viewAllUsers().call());
+
     // console.log(friends)
     // makeFriendViaInvitationLink();
   }
@@ -538,12 +542,13 @@ export default function LskHome() {
   // Displays each card
   const chats = friends
     ? friends.map((friend) => {
-        if (friend.name.toLowerCase().indexOf(searchText.toLowerCase())>-1) {
+        if (friend.name.toLowerCase().indexOf(searchText.toLowerCase())>-1 || friend.publicKey.toLowerCase().indexOf(searchText.toLowerCase())>-1) {
           return (
             <ChatCard
               publicKey={friend.publicKey}
               name={friend.name}
               avatar={friend.avatar}
+              isFriend={true}
               getMessages={async (key) => {
                 await getMessage(key);
                 scrollToBottom();
@@ -553,11 +558,46 @@ export default function LskHome() {
         }
       })
     : null;
-  
-  async function findNotInChat() {
-    if (searchText) {
-      let present = await contract.methods.checkUserExists(address).call();
+
+  function findNotInChat() {
+    if (searchText && friends) {
+
+      console.log(allUsers);
+      console.log(friends);
+      var pbFriends = friends.map(x => x.publicKey);
+      console.log(pbFriends);
+      var userList = [];
+      for (var ui in allUsers) {
+        if (!pbFriends.includes(allUsers[ui][1]) && allUsers[ui][1]!=myPublicKey ) {
+          var userName = allUsers[ui][0];
+          var userAddress = allUsers[ui][1];
+          if (userName.toLowerCase().indexOf(searchText.toLowerCase())>-1 || userAddress.toLowerCase().indexOf(searchText.toLowerCase())>-1) {
+            userList.push({
+              publicKey :userAddress,
+              name: userName,
+              type : allUsers[ui][3]
+            })
+          }
+        }
+      }
+      // console.log(userList);
+      var frAvatar = "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/default-avatar.png";
+
+      return userList.map((friend) => {
+          return (
+            <ChatCard
+              publicKey={friend.publicKey}
+              name={friend.name}
+              isFriend={false}
+              userType={friend.type}
+              avatar={frAvatar}
+              addFriend={(e)=>{addChat(friend.name, friend.publicKey)}}
+            />
+          );
+        })
+      return (<></>)
     }
+    return (<></>)
   }
   
   const onSendMsgText = async function(text) {
@@ -691,6 +731,14 @@ export default function LskHome() {
               style={{ height: "405px", overflowY: "auto", paddingTop: "2mm" }}
             >
               {chats}
+              {(searchText 
+                ? <div>
+                    <div style={{textAlign : "center", lineHeight: "0.1em", borderBottom: "1px solid #000", margin: "10px"}}>
+                      <span style={{background:"rgb(220, 220, 220)" }}>Not in your list</span>
+                    </div>
+                    {findNotInChat()}
+                  </div> 
+                : <></>)}
             </div>
             <div style={{ display: "flex", paddingTop: "10px" }}>
               <AddNewChat

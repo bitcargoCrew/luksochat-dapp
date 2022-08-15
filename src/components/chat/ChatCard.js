@@ -11,7 +11,9 @@ export function ChatCard(props) {
         border="success"
         style={{ width: "100%", alignSelf: "center", marginLeft: "15px" }}
         onClick={() => {
-          props.getMessages(props.publicKey);
+          if (props.isFriend) {
+            props.getMessages(props.publicKey);
+          }
         }}
       >
         <Card.Body>
@@ -27,6 +29,14 @@ export function ChatCard(props) {
             {props.publicKey.length > 20
               ? props.publicKey.substring(0, 20) + " ..."
               : props.publicKey}{" "}
+            {!props.isFriend 
+              ? (<span 
+                    style={{"height": "20px", "float": "right", border : "1px solid #28a745",   borderRadius: "5px" , padding : "1px" , cursor: "pointer" }}
+                    onClick={(e)=>{props.addFriend()}}
+                  >
+                  {props.userType=="1" ? "+Friend" : "+Join" }
+                </span>) 
+              : (<></>)}
           </Card.Subtitle>
         </Card.Body>
       </Card>
