@@ -1,5 +1,6 @@
 import React from "react";
 import { useState, useEffect, useRef } from "react";
+import { useRouter } from 'next/router'
 import { Container, Row, Col, Card, Form, Button } from "react-bootstrap";
 import {
   NavBar,
@@ -8,8 +9,8 @@ import {
   AddNewChat,
   AddNewGroup,
   AddNewFriendInGroup,
-  MintLSP7Token,
-  AttachAsset
+  AttachAsset,
+  ModelAlert
 } from "./Components.js";
 // import { ethers } from "ethers";
 import { abi } from "./abi";
@@ -34,7 +35,12 @@ export default function LskHome() {
   const [myAvatar, setMyAvatar] = useState("");
   const [myPublicKey, setMyPublicKey] = useState(null);
   const [ msgText, setMsgText ] = useState('')
+  const [ msgPlaceholder, setMsgPlaceholder ] = useState('Type a message');
+
   const [messagesEnd, setMyMessagesEnd] = useState(null);
+  const [showAlert, setShowAlert] = useState({show : false, title: "Error", content: "Error"});
+
+  const router = useRouter()
 
   const [activeChat, setActiveChat] = useState({
     friendname: null,
@@ -56,12 +62,24 @@ export default function LskHome() {
   let web3;
 
   async function logout() {
-    setMyName(undefined);
-    setMyPublicKey(undefined);
+    setMyPublicKey("logout");
+    setMyName(null);
+    setActiveChatMessages(null);
     setShowConnectButton("block");
   }
   // Login to Metamask and check the if the user exists else creates one
   async function login() {
+    web3 = new Web3(window.ethereum);
+    web3.eth.handleRevert = true;
+    // console.log(web3);
+
+    window.web3 = web3;
+
+    var address = await web3.eth.requestAccounts();
+    await autoLogin();
+  }
+  
+  async function autoLogin() {
 
     web3 = new Web3(window.ethereum);
     web3.eth.handleRevert = true;
@@ -71,12 +89,15 @@ export default function LskHome() {
     
     let address = await web3.eth.getAccounts();
     
-    // console.log(address);
-    
-    address = await web3.eth.requestAccounts();
-    // console.log(address);
-    
+    console.log(address);
+    if (!(address && address[0])) {
+      address = await web3.eth.requestAccounts();
+    }
     address = address[0];
+    setMyPublicKey(address);
+
+    // console.log(address);
+    
     
     setMyAddress(address);
     
@@ -127,17 +148,24 @@ export default function LskHome() {
         setMyAvatar((myProfile.profileImage[0].url).replace("ipfs://", "https://ipfs.io/ipfs/"));
       }
       setMyName(username);
-      setMyPublicKey(address);
       setShowConnectButton("none");
       // fnRandomGroupId();
-
+      await makeFriendViaInvitationLink();
     } catch (err) {
       console.log(err);
-      alert("CONTRACT_ADDRESS not set properly!");
+      // alert("CONTRACT_ADDRESS not set properly!");
+      setShowAlert({show: true, title: "ERROR", content: err.toString()});
     }
     // } else {
     //   alert("Couldn't connect to Metamask");
     // }
+  }
+
+  async function makeFriendViaInvitationLink() {
+    // console.log(router.query);
+    if (router.query && router.query.friend) {
+      await addChat(undefined, router.query.friend)
+    }
   }
 
   // async function updateMyAssetList() {
@@ -164,7 +192,9 @@ export default function LskHome() {
     try {
       let present = await myContract.methods.checkUserExists(publicKey).call();
       if (!present) {
-        alert("Address not found: Ask them to join the app :)");
+        // alert("Address not found: Ask them to join the app :)");
+        setShowAlert({show: true, title: "ERROR", content: "Address not found: Ask them to join the app :)"});
+
         return;
       }
       try {
@@ -199,13 +229,17 @@ export default function LskHome() {
         setFriends(friends.concat(frnd));
       } catch (err) {
         console.log(err);
-        alert(
-          "Friend already added! You can't be friends with the same person twice ;P"
-        );
+        // alert(
+        //   "Friend already added! You can't be friends with the same person twice ;P"
+        // );
+        setShowAlert({show: true, title: "WARNING", content: "Friend already added!"});
+
       }
     } catch (err) {
       console.log(err);
-      alert("Invalid address!");
+      // alert("Invalid address!");
+      setShowAlert({show: true, title: "ERROR", content: "Your friend address is invalid"});
+
     }
   }
 
@@ -232,13 +266,11 @@ export default function LskHome() {
       } catch (err) {
         console.log(err);
         console.log(err.message);
-        alert(
-          "Friend already added! You can't be friends with the same person twice ;P"
-        );
+        setShowAlert({show: true, title: "INFO", content: "Your group address is already added"});
       }
     } catch (err) {
       console.log(err);
-      alert("Invalid address!");
+      setShowAlert({show: true, title: "ERROR", content: "Your group address is not valid"});
     }
   }
 
@@ -257,25 +289,26 @@ export default function LskHome() {
       } catch (err) {
         console.log(err);
         console.log(err.message);
-        alert(
-          "Friend already added! You can't be friends with the same person twice ;P"
-        );
+        setShowAlert({show: true, title: "WARNING", content: "Your friend is already in the group"});
       }
     } catch (err) {
       console.log(err);
-      alert("Invalid address!");
+      setShowAlert({show: true, title: "WARNING", content: "Your friend address is not valid"});
     }
   }
 
   // Sends messsage to an user
   async function sendMessage(data) {
     if (!(activeChat && activeChat.publicKey)) return;
+    setMsgPlaceholder("Sending your message...");
 
     const recieverAddress = activeChat.publicKey;
     await myContract.methods.sendMessage(recieverAddress, data).send({
       from : myAddress
     });
     refreshActiveMsg();
+    setMsgPlaceholder("Type a message");
+
   }
 
   function getFriendInfor(friendsPublicKey) {
@@ -418,53 +451,52 @@ export default function LskHome() {
   // }
 
   // This executes every time page renders and when myPublicKey or myContract changes
-  useEffect(() => {
-    async function loadFriends() {
-      console.log("loadFriends");
-      let friendList = [];
-      // Get Friends
-      try {
-        // let allData = await myContract.methods["0x3b9f708d"].call();
-        // console.log(allData);
-        // const data1 = await myContract.methods.getAnyUser(myAddress).call();
-        
-        // console.log(data1);
-        
-        const data = await myContract.methods.getMyFriendList().call({
-          from : myAddress
-        });
-        console.log(data);
-        data.forEach((item) => {
-          friendList.push({ publicKey: item[0], name: item[1], userType : parseInt(item[2]) });
-        });
 
-        console.log(friendList);
-        for (var f in friendList) {
-          var frProfile = await getProfileData(friendList[f].publicKey);
-          friendList[f].profile = frProfile;
-          var frAvatar = "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/default-avatar.png";
-          if (frProfile && frProfile.profileImage && frProfile.profileImage[0]) {
-            frAvatar = (frProfile.profileImage[0].url).replace("ipfs://", "https://ipfs.io/ipfs/");
-          }
-          friendList[f].avatar = frAvatar;
+  async function loadFriends() {
+    console.log("loadFriends");
+    let friendList = [];
+    // Get Friends
+    try {
+      // let allData = await myContract.methods["0x3b9f708d"].call();
+      // console.log(allData);
+      // const data1 = await myContract.methods.getAnyUser(myAddress).call();
+      
+      // console.log(data1);
+      
+      const data = await myContract.methods.getMyFriendList().call({
+        from : myAddress
+      });
+      console.log(data);
+      data.forEach((item) => {
+        friendList.push({ publicKey: item[0], name: item[1], userType : parseInt(item[2]) });
+      });
+
+      console.log(friendList);
+      for (var f in friendList) {
+        var frProfile = await getProfileData(friendList[f].publicKey);
+        friendList[f].profile = frProfile;
+        var frAvatar = "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/default-avatar.png";
+        if (frProfile && frProfile.profileImage && frProfile.profileImage[0]) {
+          frAvatar = (frProfile.profileImage[0].url).replace("ipfs://", "https://ipfs.io/ipfs/");
         }
-
-      } catch (err) {
-        console.log(err);
-        friendList = [];
+        friendList[f].avatar = frAvatar;
       }
-      setFriends(friendList);
-    }
-    if (myPublicKey) {
-      loadFriends();
-    }
 
-    // const interval = setInterval(() => {
-    //   console.log('This will run every second!');
-    //   // console.log(activeChat);
-    // }, 1000);
-    // return () => clearInterval(interval);
+    } catch (err) {
+      console.log(err);
+      friendList = [];
+    }
+    setFriends(friendList);
+  }
 
+  useEffect(() => {
+    if (myPublicKey!="logout") {
+      if (myPublicKey && myContract) {
+        loadFriends();
+      } else {
+        autoLogin();
+      }
+    }
   }, [myPublicKey, myContract]);
 
   // Makes Cards for each Message
@@ -507,8 +539,8 @@ export default function LskHome() {
     : null;
   
   const onSendMsgText = async function(text) {
-    await sendMessage(text);
     setMsgText("");
+    await sendMessage(text);
   }
   
   const refreshActiveMsg = function() {
@@ -587,6 +619,10 @@ export default function LskHome() {
   return (
     <Container style={{ padding: "0px", border: "1px solid grey" }}>
       {/* This shows the navbar with connect button */}
+      <ModelAlert 
+        showAlert={showAlert}
+        onHide={()=>{setShowAlert({show: false})}}
+      ></ModelAlert>
       <NavBar
         
         username={myName}
@@ -702,7 +738,7 @@ export default function LskHome() {
                 <Form.Row className="align-items-center">
                   <Col xs={11}>
                     <InputEmoji
-                      placeholder="Send Message"
+                      placeholder={msgPlaceholder}
                       value={msgText}
                       onChange={setMsgText}
                       onEnter={onSendMsgText}

@@ -4,6 +4,12 @@ import { Image } from 'semantic-ui-react'
 
 // This is a functional component which renders the individual messages
 export function Message(props) {
+
+  function gmtToLocalTime(dateStr) {
+    const date = new Date(dateStr);
+    return date.toLocaleString(); 
+  }
+
   return (
     <Row style={{ marginRight: "0px" }}>
       <Card
@@ -17,7 +23,7 @@ export function Message(props) {
         }}
       >
         <Card.Body>
-          <h6 style={{ float: "right" }}>{props.timeStamp}</h6>
+          <h6 style={{ float: "right" }}>{gmtToLocalTime(props.timeStamp)}</h6>
           <Card.Subtitle>
             <Image src={props.avatar} avatar />
             <b>{props.sender}</b>

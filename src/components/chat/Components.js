@@ -12,3 +12,5 @@ export { Message } from "./Message";
 export { ChatCard } from "./ChatCard";
 
 export { AttachAsset } from "./AttachAsset";
+
+export {ModelAlert} from "./ModelAlert"
