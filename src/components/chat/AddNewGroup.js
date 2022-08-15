@@ -44,6 +44,14 @@ export function AddNewGroup(props) {
               placeholder="Name"
             />
             <br />
+            <Form.Control
+              required
+              id="avatar"
+              size="text"
+              type="text"
+              placeholder="Your group avatar"
+            />
+            <br />
             <Form.Check
               label="is this a group of asset owner"
               type="checkbox"
@@ -63,7 +71,8 @@ export function AddNewGroup(props) {
               props.addHandler(
                 document.getElementById("addName").value,
                 document.getElementById("addPublicKey").value,
-                document.getElementById("isAssetGroup").checked
+                document.getElementById("isAssetGroup").checked,
+                document.getElementById("avatar").value
               );
               handleClose();
             }}

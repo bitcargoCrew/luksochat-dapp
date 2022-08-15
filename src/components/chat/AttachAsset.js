@@ -98,7 +98,12 @@ export function AttachAsset(props) {
         variant="success" className="mb-2" onClick={handleShow}
         disabled={ !(props.currActivFriend.publicKey) }
         > */}
-        <Image src="attach.svg" avatar alt="React Logo" onClick={handleShow} disabled={ !(props.currActivFriend.publicKey) } ></Image>
+        <Image 
+          src="attach.svg" avatar 
+          style={{cursor: "pointer"}} 
+          onClick={handleShow} 
+          disabled={ !(props.currActivFriend.publicKey) } 
+        ></Image>
         {/* // Attach */}
       {/* // </Button> */}
       <Modal show={show && props.currActivFriend.publicKey} onHide={handleClose}>

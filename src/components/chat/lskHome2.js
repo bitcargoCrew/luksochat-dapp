@@ -24,12 +24,9 @@ import { Image } from 'semantic-ui-react'
 
 import InputEmoji from 'react-input-emoji'
 
-import LSP7Mintable from './LSKToken/LSP7Mintable.json';
-import UniversalProfile from './LSKToken/UniversalProfile.json';
-
 // Add the contract address inside the quotes
-const CONTRACT_ADDRESS = "0xf13cF1aF062C60D543D51166A3bB7684b4F59ec0";
-
+const CONTRACT_ADDRESS = "0x8E9b55C8948BF8c55ED43f8698264255eAfc6E2e";
+const DEFAULT_AVATAR = "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/default-avatar.png"
 export default function LskHome() {
   const [friends, setFriends] = useState(null);
   const [myName, setMyName] = useState(null);
@@ -234,10 +231,18 @@ export default function LskHome() {
         var frnd = { name: name, publicKey: publicKey, userType : userType };
 
         frnd.profile = frProfile;
-        var frAvatar = "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/default-avatar.png";
+        var frAvatar = "";
         if (frProfile && frProfile.profileImage && frProfile.profileImage[0]) {
           frAvatar = (frProfile.profileImage[0].url).replace("ipfs://", "https://ipfs.io/ipfs/");
         }
+        if (!frAvatar) {
+          frAvatar = (await myContract.methods.viewUser(publicKey).call())[5];
+          frAvatar = frAvatar.replace("ipfs://", "https://ipfs.io/ipfs/");
+          if (!frAvatar) {
+            frAvatar = DEFAULT_AVATAR;
+          }
+        }
+
         frnd.avatar = frAvatar;
 
         // console.log(friends.concat(frnd));
@@ -259,13 +264,13 @@ export default function LskHome() {
   }
 
   // Add a friend to the users' Friends List
-  async function addGroup(name, publicKey, isAssetGroup) {
+  async function addGroup(name, publicKey, isAssetGroup, avatar) {
     try {
       // publicKey = "0x9a5aaD239C4485861B05051bFB506EfdbEe92b25";
       try {
-        console.log("myAddress:"+myAddress+ " > "+ name, publicKey, isAssetGroup);
-        console.log(myContract.methods);
-        await myContract.methods.createGroup(publicKey, name, isAssetGroup).send({
+        // console.log("myAddress:"+myAddress+ " > "+ name, publicKey, isAssetGroup);
+        // console.log(myContract.methods);
+        await myContract.methods.createGroup(publicKey, name, isAssetGroup, avatar).send({
           from : myAddress
         }).catch((err) => {
           console.log(err);
@@ -274,8 +279,7 @@ export default function LskHome() {
           return;
          });
 
-        var frAvatar = "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/default-avatar.png";
-        const frnd = { name: name, publicKey: publicKey, userType : 2,  avatar: frAvatar};
+        const frnd = { name: name, publicKey: publicKey, userType : 2,  avatar: avatar};
         setFriends(friends.concat(frnd));
       } catch (err) {
         console.log(err);
@@ -475,18 +479,26 @@ export default function LskHome() {
       const data = await myContract.methods.getMyFriendList().call({
         from : myAddress
       });
-      console.log(data);
+      // console.log(data);
       data.forEach((item) => {
         friendList.push({ publicKey: item[0], name: item[1], userType : parseInt(item[2]) });
       });
 
-      console.log(friendList);
+      // console.log(friendList);
       for (var f in friendList) {
         var frProfile = await getProfileData(friendList[f].publicKey);
         friendList[f].profile = frProfile;
-        var frAvatar = "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/default-avatar.png";
+        var frAvatar = "";
         if (frProfile && frProfile.profileImage && frProfile.profileImage[0]) {
           frAvatar = (frProfile.profileImage[0].url).replace("ipfs://", "https://ipfs.io/ipfs/");
+        }
+        if (!frAvatar) {
+        // console.log("####################################");
+          frAvatar = (await myContract.methods.viewUser(friendList[f].publicKey).call())[5];
+          frAvatar = frAvatar.replace("ipfs://", "https://ipfs.io/ipfs/");
+          if (!frAvatar) {
+            frAvatar = DEFAULT_AVATAR;
+          }
         }
         friendList[f].avatar = frAvatar;
       }
@@ -504,11 +516,11 @@ export default function LskHome() {
   }
 
   useEffect(() => {
-    console.log("useEffect");
+    // console.log("useEffect");
     if (myContract) {
-      console.log("before load friends");
+      // console.log("before load friends");
       loadFriends();
-      console.log(friends);
+      // console.log(friends);
       if (friends) {
         makeFriendViaInvitationLink();
       }
@@ -671,15 +683,11 @@ export default function LskHome() {
       return (<AddNewGroup
         randomAddress={  window.web3.utils.randomHex(20) }
         myContract={myContract}
-        addHandler={(name, publicKey, isAssetGroup) => addGroup(name, publicKey, isAssetGroup)}
+        addHandler={(name, publicKey, isAssetGroup, avatar) => addGroup(name, publicKey, isAssetGroup, avatar)}
       />)
     } else {
       return (<></>)
     }
-  }
-
-  function shareGroup(e) {
-
   }
 
   return (
@@ -802,9 +810,9 @@ export default function LskHome() {
                 borderTop: "1px solid gray",
                 position: "relative",
                 bottom: "0px",
-                padding: "10px 10px 0 10px",
+                padding: "10px",
                 margin: "0 95px 0 0",
-                width: "97%",
+                width: "100%",
               }}
             >
               <Form>

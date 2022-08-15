@@ -52,6 +52,25 @@
 		{
 			"inputs": [
 				{
+					"internalType": "address",
+					"name": "pubkey",
+					"type": "address"
+				}
+			],
+			"name": "checkUserExists",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
 					"internalType": "string",
 					"name": "name",
 					"type": "string"
@@ -78,48 +97,16 @@
 					"internalType": "bool",
 					"name": "checkOwnId",
 					"type": "bool"
+				},
+				{
+					"internalType": "string",
+					"name": "avatar",
+					"type": "string"
 				}
 			],
 			"name": "createGroup",
 			"outputs": [],
 			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "friend_key",
-					"type": "address"
-				},
-				{
-					"internalType": "string",
-					"name": "_msg",
-					"type": "string"
-				}
-			],
-			"name": "sendMessage",
-			"outputs": [],
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "pubkey",
-					"type": "address"
-				}
-			],
-			"name": "checkUserExists",
-			"outputs": [
-				{
-					"internalType": "bool",
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"stateMutability": "view",
 			"type": "function"
 		},
 		{
@@ -208,6 +195,24 @@
 			"type": "function"
 		},
 		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "friend_key",
+					"type": "address"
+				},
+				{
+					"internalType": "string",
+					"name": "_msg",
+					"type": "string"
+				}
+			],
+			"name": "sendMessage",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
 			"inputs": [],
 			"name": "viewAllUsers",
 			"outputs": [
@@ -254,11 +259,84 @@
 							"internalType": "bool",
 							"name": "checkOwnId",
 							"type": "bool"
+						},
+						{
+							"internalType": "string",
+							"name": "avatar",
+							"type": "string"
 						}
 					],
 					"internalType": "struct Database.user[]",
 					"name": "",
 					"type": "tuple[]"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "userAddress",
+					"type": "address"
+				}
+			],
+			"name": "viewUser",
+			"outputs": [
+				{
+					"components": [
+						{
+							"internalType": "string",
+							"name": "name",
+							"type": "string"
+						},
+						{
+							"internalType": "address",
+							"name": "userAddress",
+							"type": "address"
+						},
+						{
+							"components": [
+								{
+									"internalType": "address",
+									"name": "pubkey",
+									"type": "address"
+								},
+								{
+									"internalType": "string",
+									"name": "name",
+									"type": "string"
+								},
+								{
+									"internalType": "uint256",
+									"name": "userType",
+									"type": "uint256"
+								}
+							],
+							"internalType": "struct Database.friend[]",
+							"name": "friendList",
+							"type": "tuple[]"
+						},
+						{
+							"internalType": "uint256",
+							"name": "userType",
+							"type": "uint256"
+						},
+						{
+							"internalType": "bool",
+							"name": "checkOwnId",
+							"type": "bool"
+						},
+						{
+							"internalType": "string",
+							"name": "avatar",
+							"type": "string"
+						}
+					],
+					"internalType": "struct Database.user",
+					"name": "",
+					"type": "tuple"
 				}
 			],
 			"stateMutability": "view",

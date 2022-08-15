@@ -13,7 +13,7 @@ export function AddNewFriendInGroup(props) {
       {/* <Button variant="success" className="mb-2" onClick={handleShow} style={{float : "right"}}>
         + New Friend for Group
       </Button> */}
-      <Image src="plususer.svg" onClick={handleShow} ></Image>
+      <Image src="plususer.svg" style={{cursor: "pointer"}} onClick={handleShow} ></Image>
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
