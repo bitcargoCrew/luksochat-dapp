@@ -54,20 +54,15 @@ const Banner = () => {
 
           <Flex sx={styles.buttonGroup}>
 
-            <Button
-              sx={styles.btnOutlined}
+            <Button path="/chat">
               
-              onClick={handleClick}
-            >
-              Explore
+              Go to App
             </Button>
-            <ModalVideo
-              channel="youtube"
-              isOpen={videoOpen}
-              videoId="YVsC4B0AMbs"
-              onClose={() => setVideoOpen(false)}
-            />
+            <Button>
+              Create Profile
+            </Button>
           </Flex>
+
         </div>
 
             </Box>
@@ -172,7 +167,7 @@ const styles = {
     alignItems: 'center',
     mb: ['40px'],
     '> div + div': {
-      ml: ['10px', null, null, '20px', null, '30px'],
+      ml: ['10px', null, null, '20px', null, '10px'],
     },
     img: {
       display: 'flex',

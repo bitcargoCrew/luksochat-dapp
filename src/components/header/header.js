@@ -35,7 +35,7 @@ export default function Header({ className }) {
           </Flex>
 
           <Link
-            path="/"
+            path="/chat"
             ml={2}
             label="Log in"
             sx={styles.headerBtn}
@@ -64,7 +64,7 @@ const styles = {
     ml: ['0', null, null, 'auto', '0'],
     mr: ['0', null, null, '20px', '0'],
     '&:hover': {
-      color: '#fff',
+      color: '#FFF',
     },
   },
   header: {

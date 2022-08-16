@@ -11,7 +11,7 @@ export default function Logo() {
         variant: 'links.logo',
       }}
     >
-      <Image src={logo} sx={{ display: 'flex' }} alt="startup landing logo" />
+      <Image src={logo} sx={{ display: 'flex' }} alt="Bitvia Chat DApp" />
     </Link>
   );
 }
