@@ -5,6 +5,7 @@ import 'typeface-dm-sans';
 import 'semantic-ui-css/semantic.min.css'
 import "bootstrap/dist/css/bootstrap.min.css";
 
+import "../components/chat/css/chat.css";
 
 export default function CustomApp({ Component, pageProps }) {
   return <Component {...pageProps} />;

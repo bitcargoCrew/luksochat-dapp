@@ -16,7 +16,7 @@ export function ChatCard(props) {
           }
         }}
       >
-        <Card.Body>
+        <Card.Body style={{padding: "0.60rem"}}>
           <Card.Title> 
             <Image src={props.avatar} avatar />
             {props.name} 
@@ -34,7 +34,7 @@ export function ChatCard(props) {
                     style={{"height": "20px", "float": "right", border : "1px solid #28a745",   borderRadius: "5px" , padding : "1px" , cursor: "pointer" }}
                     onClick={(e)=>{props.addFriend()}}
                   >
-                  {props.userType=="1" ? "+Friend" : "+Join" }
+                  {props.userType=="1" ? "+Friend" : "+Join Group" }
                 </span>) 
               : (<></>)}
           </Card.Subtitle>

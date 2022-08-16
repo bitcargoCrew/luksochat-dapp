@@ -1,12 +1,8 @@
 import React from "react";
 import { useState } from "react";
-import { Button, Modal, Form, ListGroup, Tabs, Tab, Image, Row, Col, Card } from "react-bootstrap";
+import { Button, Modal, Form, ListGroup, Tabs, Tab, Image, Row, Col, Card, InputGroup } from "react-bootstrap";
 import {getLSP5ReceivedAssets, sendLSP7Token, getBalanceOf, sendLYX, createAndMintLSP7Token, createAndMintLSP8Token, sendLSP8Token} from "./ReadProfileFn.js";
 // import {ReactComponent as AttachLogo} from './icons/attach.svg';
-
-import {
-  MintLSP7Token, MintLSP8Token
-} from "./Components.js";
 
 // This Modal help Add a new friend
 export function AttachAsset(props) {
@@ -15,7 +11,7 @@ export function AttachAsset(props) {
   const [myBalance, setMyBalance] = useState(0);
 
   const [selectedTab, setSelectedTab] = useState('lyx');
-  const [selectedToken, setSelectedToken] = useState('');
+  const [selectedToken, setSelectedToken] = useState({});
 
   const [amount, setAmount] = useState(0);
 
@@ -38,33 +34,41 @@ export function AttachAsset(props) {
   async function fnSend() {
     var toAddr = props.currActivFriend.publicKey;
     var fromAddr = props.address;
+    try {
+      props.setLoadingActive(true);
 
-    if (selectedTab=="token") {
-      var tokenAddress = selectedToken.address;
-      // var amount = parseInt(document.getElementById("amount").value);
+      if (selectedTab=="token") {
+        var tokenAddress = selectedToken.address;
+        // var amount = parseInt(document.getElementById("amount").value);
 
-      console.log(tokenAddress + " : " + amount + " : " + toAddr + " "+ tokenAddress);
-      const tx = await sendLSP7Token(fromAddr, toAddr, amount, tokenAddress);
+        console.log(tokenAddress + " : " + amount + " : " + toAddr + " "+ tokenAddress);
+        const tx = await sendLSP7Token(fromAddr, toAddr, amount, tokenAddress);
 
-      await props.sendNoti(props.name+" has just sent "+amount+" "+selectedToken.name+" (LSK7Token) to "+props.currActivFriend.friendname+" at <a href='https://explorer.execution.l16.lukso.network/tx/"+tx.transactionHash+"'>txhash</a>");
-      setShow(false);
+        await props.sendNoti(props.name+" has just sent "+amount+" "+selectedToken.name+" (LSK7Token) to "+props.currActivFriend.friendname+" at <a href='https://explorer.execution.l16.lukso.network/tx/"+tx.transactionHash+"'>txhash</a>");
+        setShow(false);
 
-    } else if (selectedTab == "lyx") {
-      console.log(amount);
-      console.log( "Send LYX : " + amount + " : " + toAddr + " "+ tokenAddress);
-      const tx = await sendLYX(fromAddr, toAddr, amount);
+      } else if (selectedTab == "lyx") {
+        console.log(amount);
+        console.log( "Send LYX : " + amount + " : " + toAddr + " "+ tokenAddress);
+        const tx = await sendLYX(fromAddr, toAddr, amount);
 
-      await props.sendNoti(props.name+" has just sent "+amount+" LYX to "+props.currActivFriend.friendname+" at <a href='https://explorer.execution.l16.lukso.network/tx/"+tx.transactionHash+"'>txhash</a>");
-      setShow(false);
-    } else if (selectedTab == "nft") {
-      console.log(selectedToken);
-      var tokenAddress = selectedToken.address;
-      var tokenId = selectedToken.id;
-      const tx = await sendLSP8Token(fromAddr, toAddr, tokenId, tokenAddress);
+        await props.sendNoti(props.name+" has just sent "+amount+" LYX to "+props.currActivFriend.friendname+" at <a href='https://explorer.execution.l16.lukso.network/tx/"+tx.transactionHash+"'>txhash</a>");
+        setShow(false);
+      } else if (selectedTab == "nft") {
+        console.log(selectedToken);
+        var tokenAddress = selectedToken.address;
+        var tokenId = selectedToken.id;
+        const tx = await sendLSP8Token(fromAddr, toAddr, tokenId, tokenAddress);
 
-      await props.sendNoti(props.name+" has just sent an NFT "+selectedToken.name+" (LSK8Token) to "+props.currActivFriend.friendname+" at <a href='https://explorer.execution.l16.lukso.network/tx/"+tx.transactionHash+"'>txhash</a>");
-      setShow(false);
+        await props.sendNoti(props.name+" has just sent an NFT "+selectedToken.name+" (LSK8Token) to "+props.currActivFriend.friendname+" at <a href='https://explorer.execution.l16.lukso.network/tx/"+tx.transactionHash+"'>txhash</a>");
+        setShow(false);
 
+      }
+      props.setLoadingActive(false)
+
+    }catch(e) {
+      console.log(e);
+      props.setLoadingActive(false)
     }
   }
 
@@ -112,12 +116,14 @@ export function AttachAsset(props) {
         </Modal.Header>
         <Modal.Body>
         <Tabs 
-          onSelect={(selectedTab) => setSelectedTab(selectedTab)}
+          onSelect={(selectedTab) => {
+            setSelectedTab(selectedTab);
+          }}
           activeKey={selectedTab}
         >
           <Tab eventKey="lyx" title="LYX">
             <div style={{"paddingTop": "10px"}}>
-              <h3> Your LYX Balance : {myBalance} LYX </h3>
+              <h5> Your UP LYX Balance : {myBalance} LYX </h5>
               <Form.Control
                   required
                   id="amount"
@@ -131,7 +137,7 @@ export function AttachAsset(props) {
                 />
             </div>
           </Tab>
-          <Tab eventKey="token" title="LS7Tokens">
+          <Tab eventKey="token" title="Token">
             <div style={{"paddingTop": "10px"}}>
 
               <ListGroup
@@ -168,6 +174,11 @@ export function AttachAsset(props) {
                   }}
                 />
               <hr/>
+                <InputGroup className="mb-3">
+                  <InputGroup.Text>Token Address</InputGroup.Text>
+                  <Form.Control value={selectedToken.address} />
+                </InputGroup>
+              <hr/>
               <div style={{"textAlign": "center"}}>or</div>
               <hr/>
               <a href="https://universalpage.dev/assets/create" style={{"padding" : "10px", "background" : "blue", "color": "white", "borderRadius": "9px" }}>Create New Token</a>
@@ -200,9 +211,21 @@ export function AttachAsset(props) {
                 )}
               </Row>
               <hr/>
+              <InputGroup className="mb-3">
+                <InputGroup.Text>Token Address</InputGroup.Text>
+                <Form.Control value={selectedToken.address} />
+              </InputGroup>
+              <hr/>
               <div style={{"textAlign": "center"}}>or</div>
               <hr/>
-              <a href="https://universalpage.dev/assets/create" style={{"padding" : "10px", "background" : "blue", "color": "white", "borderRadius": "9px" }}>Create New NFT</a>
+              <a href="https://universalpage.dev/assets/create" 
+                style={{"padding" : "10px", "background" : "blue", "color": "white", "borderRadius": "9px" }}>
+                  Create New NFT
+              </a>
+              {/* <a href="https://universalpage.dev/assets/create" 
+                style={{"padding" : "10px", "background" : "blue", "color": "white", "borderRadius": "9px", "marginLeft" : "10px" }}>
+                  Join asset group
+              </a> */}
             </div>
           </Tab>
         </Tabs>
