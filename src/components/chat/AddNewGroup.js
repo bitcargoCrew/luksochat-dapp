@@ -49,7 +49,7 @@ export function AddNewGroup(props) {
               id="avatar"
               size="text"
               type="text"
-              placeholder="Your group avatar"
+              placeholder="Choose an image URL for your group profile picture"
             />
             <br />
             <Form.Check

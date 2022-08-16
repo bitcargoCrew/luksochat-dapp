@@ -11,7 +11,8 @@ import {
   AddNewFriendInGroup,
   AttachAsset,
   ModelAlert,
-  ShareModal
+  ShareModal,
+  Loading
 } from "./Components.js";
 // import { ethers } from "ethers";
 // import { abi } from "./abi";
@@ -35,12 +36,12 @@ export default function LskHome() {
   const [ msgText, setMsgText ] = useState('')
   const [ searchText, setSearchText ] = useState('')
 
-  const [ msgPlaceholder, setMsgPlaceholder ] = useState('Type a message');
+  const [ loadingActive, setLoadingActive ] = useState(false);
 
   const [messagesEnd, setMyMessagesEnd] = useState(null);
   const [showAlert, setShowAlert] = useState({show : false, title: "Error", content: "Error"});
   const [ allUsers, setAllUsers ] = useState([])
-
+  const [effectStep, setEffectStep] = useState(0);
   const router = useRouter()
 
   const [activeChat, setActiveChat] = useState({
@@ -171,7 +172,12 @@ export default function LskHome() {
   async function makeFriendViaInvitationLink() {
     if (router.query && router.query.invite) {
       console.log("makeFriendViaInvitationLink");
+      setLoadingActive(true);
+
       await addChat(undefined, router.query.invite);
+
+      setLoadingActive(false);
+
     }
   }
 
@@ -197,6 +203,8 @@ export default function LskHome() {
   async function addChat(name, publicKey) {
     console.log(myContract);
     try {
+      setLoadingActive(true);
+
       let present = await myContract.methods.checkUserExists(publicKey).call();
       if (!present) {
         // alert("Address not found: Ask them to join the app :)");
@@ -247,17 +255,25 @@ export default function LskHome() {
 
         // console.log(friends.concat(frnd));
         setFriends(friends.concat(frnd));
+
+        setLoadingActive(false);
+
       } catch (err) {
         console.log(err);
         // alert(
         //   "Friend already added! You can't be friends with the same person twice ;P"
         // );
+        setLoadingActive(false);
+
         setShowAlert({show: true, title: "WARNING", content: "Friend already added!"});
 
       }
     } catch (err) {
       console.log(err);
       // alert("Invalid address!");
+
+      setLoadingActive(false);
+
       setShowAlert({show: true, title: "ERROR", content: "Your friend address is invalid"});
 
     }
@@ -270,25 +286,36 @@ export default function LskHome() {
       try {
         // console.log("myAddress:"+myAddress+ " > "+ name, publicKey, isAssetGroup);
         // console.log(myContract.methods);
-        await myContract.methods.createGroup(publicKey, name, isAssetGroup, avatar).send({
-          from : myAddress
-        }).catch((err) => {
-          console.log(err);
-          setShowAlert({show: true, title: "INFO", content: "Please check again your input or you have no right to create this group"});
 
-          return;
-         });
+        setLoadingActive(true);
 
-        const frnd = { name: name, publicKey: publicKey, userType : 2,  avatar: avatar};
-        setFriends(friends.concat(frnd));
-      } catch (err) {
-        console.log(err);
-        console.log(err.message);
-        setShowAlert({show: true, title: "INFO", content: "Your group address is already added"});
+        try{
+          await myContract.methods.createGroup(publicKey, name, isAssetGroup, avatar).send({
+            from : myAddress
+          })
+          const frnd = { name: name, publicKey: publicKey, userType : 2,  avatar: avatar};
+          setFriends(friends.concat(frnd));
+          setLoadingActive(false);
+
+        } catch(err2) {
+          console.log(err2);
+          setLoadingActive(false);
+
+          setShowAlert({show: true, title: "INFO", content: "Please check again your input or you have no right to create this group.\nError message:"+err2.message});
+        };
+
+      } catch (err1) {
+        console.log(err1);
+        console.log(err1.message);
+        setLoadingActive(false);
+
+        setShowAlert({show: true, title: "INFO", content: "Your group address is already added.\nError message:"+err1.message});
       }
     } catch (err) {
       console.log(err);
-      setShowAlert({show: true, title: "ERROR", content: "Your group address is not valid"});
+      setLoadingActive(false);
+
+      setShowAlert({show: true, title: "ERROR", content: "Your group address is not valid.\nError message:"+err.message});
     }
   }
 
@@ -299,18 +326,25 @@ export default function LskHome() {
       // publicKey = "0x9a5aaD239C4485861B05051bFB506EfdbEe92b25";
       try {
         console.log("myAddress:"+myAddress+ " > "+ publicKey);
-        
+        setLoadingActive(true);
+
         await myContract.methods.addMemToGroup(activeChat.publicKey, publicKey).send({
           from : myAddress
         })
 
+        setLoadingActive(false);
+
       } catch (err) {
         console.log(err);
+        setLoadingActive(false);
+
         // console.log(err.message);
         setShowAlert({show: true, title: "ERROR", content: "We can not add your friend, please check with the group admin"});
       }
     } catch (err) {
       console.log(err);
+      setLoadingActive(false);
+
       setShowAlert({show: true, title: "WARNING", content: "Your friend address is not valid"});
     }
   }
@@ -318,14 +352,14 @@ export default function LskHome() {
   // Sends messsage to an user
   async function sendMessage(data) {
     if (!(activeChat && activeChat.publicKey)) return;
-    setMsgPlaceholder("Sending your message...");
+    setLoadingActive(true);
 
     const recieverAddress = activeChat.publicKey;
     await myContract.methods.sendMessage(recieverAddress, data).send({
       from : myAddress
     });
     refreshActiveMsg();
-    setMsgPlaceholder("Type a message");
+    setLoadingActive(false);
 
   }
 
@@ -476,6 +510,8 @@ export default function LskHome() {
       
       // console.log(data1);
       
+      setLoadingActive(true);
+
       const data = await myContract.methods.getMyFriendList().call({
         from : myAddress
       });
@@ -503,31 +539,38 @@ export default function LskHome() {
         friendList[f].avatar = frAvatar;
       }
 
+      setFriends(friendList);
+      setAllUsers(await myContract.methods.viewAllUsers().call());
+      
+      setEffectStep(1);
+      
+      setLoadingActive(false);
+
     } catch (err) {
       console.log(err);
-      friendList = [];
-    }
-    setFriends(friendList);
+      setLoadingActive(false);
 
-    setAllUsers(await myContract.methods.viewAllUsers().call());
+      // friendList = [];
+      setFriends([]);
+    }
 
     // console.log(friends)
     // makeFriendViaInvitationLink();
   }
 
   useEffect(() => {
-    // console.log("useEffect");
+    console.log("useEffect");
     if (myContract) {
       // console.log("before load friends");
       loadFriends();
-      // console.log(friends);
+      console.log(friends);
       if (friends) {
         makeFriendViaInvitationLink();
       }
     } else {
       autoLogin();
     }
-  }, [myContract, myName]);
+  }, [myContract, effectStep]);
 
   // Makes Cards for each Message
   const Messages = activeChatMessages
@@ -697,6 +740,7 @@ export default function LskHome() {
         showAlert={showAlert}
         onHide={()=>{setShowAlert({show: false})}}
       ></ModelAlert>
+      <Loading active={loadingActive}></Loading>
       <NavBar
         
         username={myName}
@@ -779,7 +823,7 @@ export default function LskHome() {
                         {
                           activeChat.userType == 2 
                           ? <div style={{marginLeft: "auto", marginRight: "12px", "display" : "inline-flex" }}>
-                              <ShareModal url={window.location.href + "?invite=" +activeChat.publicKey} />
+                              <ShareModal url={window.location.origin+window.location.pathname + "?invite=" +activeChat.publicKey} />
                               <AddNewFriendInGroup
                               myContract={myContract}
                               addHandler={(publicKey) => addNewFriendInGroup(publicKey)}
@@ -819,7 +863,7 @@ export default function LskHome() {
                 <Form.Row className="align-items-center">
                   <Col xs={11}>
                     <InputEmoji
-                      placeholder={msgPlaceholder}
+                      placeholder={"Type your message.."}
                       value={msgText}
                       onChange={setMsgText}
                       onEnter={onSendMsgText}
@@ -831,6 +875,7 @@ export default function LskHome() {
                       address={myPublicKey}
                       currActivFriend={activeChat}
                       sendNoti={onSendMsgText}
+                      setLoadingActive={setLoadingActive}
                     />
                   </Col>
                 </Form.Row>
