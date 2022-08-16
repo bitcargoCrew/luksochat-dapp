@@ -12,40 +12,59 @@ const data = [
   {
     id: 1,
     imgSrc: Performance,
-    altText: 'Fast Performance',
-    title: 'Fast Performance',
+    altText: 'Connect your Universal Profile',
+    title: 'Connect your Universal Profile',
     text:
-      'Get your blood tests delivered at home collect a sample from the your blood tests.',
+      'Seamlessly connect your universal Profile as your digital identity.',
   },
   {
     id: 2,
     imgSrc: Partnership,
-    altText: 'Partnership deal',
-    title: 'Partnership deal',
+    altText: 'Communicate via the Lukso Blockchain',
+    title: 'Communicate via the Lukso Blockchain',
     text:
-      'Get your blood tests delivered at home collect a sample from the your blood tests.',
+      'Peer-to-peer message transfer and content sharing.',
   },
   {
     id: 3,
     imgSrc: Subscription,
-    altText: 'Pro Subscription',
-    title: 'Pro Subscription',
+    altText: 'Create your personal community',
+    title: 'Create your personal community',
     text:
-      'Get your blood tests delivered at home collect a sample from the your blood tests.',
+      'Invite friends, create groupchats, and acces your chat history.',
   },
   {
     id: 4,
     imgSrc: Support,
-    altText: 'Customer Support',
-    title: 'Customer Support',
+    altText: 'Access the new creative economy',
+    title: 'Access the new creative economy',
     text:
-      'Get your blood tests delivered at home collect a sample from the your blood tests.',
+      'Transfer tokens, share NFTs, and collaborate with the community.',
   },
 ];
 
 export default function KeyFeature() {
   return (
-   <h1>Key Feature</h1>
+    <section sx={{ variant: 'section.keyFeature' }} id="feature">
+      <Container>
+        <SectionHeader
+          slogan="Whats the function"
+          title="Meet the features"
+        />
+
+        <Grid sx={styles.grid}>
+          {data.map((item) => (
+            <FeatureCardColumn
+              key={item.id}
+              src={item.imgSrc}
+              alt={item.altText}
+              title={item.title}
+              text={item.text}
+            />
+          ))}
+        </Grid>
+      </Container>
+    </section>
   );
 }
 
