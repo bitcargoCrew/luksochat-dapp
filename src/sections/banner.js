@@ -2,6 +2,7 @@ import React from 'react';
 import { Flex, Box, Container, Grid, Button, Input, Heading, Text } from 'theme-ui';
 import { useState } from 'react';
 import Image from 'components/image';
+import Link from 'next/link'
 
 
 import Play from 'components/icons/play';
@@ -48,23 +49,20 @@ const Banner = () => {
               <Box as="label" htmlFor="subscribe" variant="styles.srOnly">
                 subscribe
               </Box>
-  
-
         <div sx={styles.content}>
-
           <Flex sx={styles.buttonGroup}>
-
-            <Button path="/chat">
-              
-              Go to App
-            </Button>
-            <Button>
-              Create Profile
-            </Button>
+            <Link href="/chat">
+              <Button>Go to App</Button>
+            </Link>
           </Flex>
-
         </div>
-
+        <div sx={styles.content}>
+          <Flex sx={styles.buttonGroup}>
+            <Link href="https://universalprofile.cloud/create">
+              <Button>Create Profile</Button>
+            </Link>
+          </Flex>
+        </div>
             </Box>
             <Box sx={styles.partner}>
               <Text as="span">Powered by</Text>
