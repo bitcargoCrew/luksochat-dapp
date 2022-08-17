@@ -1,12 +1,56 @@
 /** @jsx jsx */
 import { jsx, Box, Container, Image, Text } from 'theme-ui';
 import { Link } from 'components/link';
+import Logo from 'components/logo';
 import data from './footer.data';
 import FooterLogo from 'assets/logo.svg';
 
 export default function Footer() {
   return (
-    <h1>Footer</h1>
+    <footer
+      sx={{
+        variant: 'layout.footer',
+        backgroundColor: '#fff',
+      }}
+    >
+      <Container
+        sx={{
+          variant: 'layout.toolbar',
+          justifyContent: ['center', null, null, 'space-between'],
+          flexDirection: ['column', null, null, null, 'row'],
+          paddingTop: [30, 40],
+          paddingBottom: [30, 65],
+        }}
+      >
+        <Box sx={styles.left}>
+          <Logo />
+          <Text as="p"> {new Date().getFullYear()}  All right reserved - Design by bitiva 
+          </Text>
+
+          <Text as="p">  </Text>
+          <a
+          href="https://drive.google.com/file/d/1YjJ3eT58UQPuftlS1WU9JYmdJJjbc-zI/view?usp=sharing"
+          target="_blank"
+          rel="noopener noreferrer">  
+           <header className='header'></header>
+          <div>  Imprint </div>
+        </a>
+      
+     
+        <Text as="p">  </Text>
+        <a
+          href="https://drive.google.com/file/d/1GzDDm9fOMB56ALTcum4QDMEWNHQsxDG0/view?usp=sharing"
+          target="_blank"
+          rel="noopener noreferrer">  
+          <header className='header'></header>
+          <div > Privacy Policy </div>
+          </a>
+
+
+        </Box>
+
+      </Container>
+    </footer>
   );
 }
 

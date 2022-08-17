@@ -1,17 +1,12 @@
 /** @jsx jsx */
-import { jsx, Container, Box, Image } from 'theme-ui';
+import { jsx, Container, Flex, Text, Heading, Box, Image } from 'theme-ui';
 import TextFeature from 'components/text-feature';
-
+import { IoIosCheckmarkCircle } from 'react-icons/io';
 import FeatureThumb from 'assets/core-feature.png';
-import shapePattern from 'assets/shape-pattern2.png';
 
 const data = {
-  subTitle: 'Core features',
-  title: 'Smart Jackpots that you may love this anytime & anywhere',
-  description:
-    'Get your tests delivered at let home collect sample from the victory of the managements that supplies best design system guidelines ever.',
-  btnName: 'Get Started',
-  btnURL: '#',
+  title: 'Instant messaging powered by the Lusko Blockchain',
+
 };
 
 export default function CoreFeature() {
@@ -20,18 +15,33 @@ export default function CoreFeature() {
     <Container sx={styles.containerBox}>
       <Box sx={styles.contentBox}>
         <TextFeature 
-          subTitle={data.subTitle}
           title={data.title}
-          description={data.description}
-          btnName={data.btnName}
-          btnURL={data.btnURL}
         />
-      </Box>
+          <Box as="ul" sx={styles.list}>
+            <Text as="li">
+              <IoIosCheckmarkCircle />
+                Communicate without any intermediary 
+            </Text>
+            <Text as="li">
+              <IoIosCheckmarkCircle />
+                Use your Lukso Universal Profile as identity
+            </Text>
+             <Text as="li">
+             <IoIosCheckmarkCircle />
+                Keep you personal data private 
+              </Text>
+              <Text as="li">
+              <IoIosCheckmarkCircle />
+                Promote exclusive content via messaging 
+              </Text>
+              <Text as="li">
+                <IoIosCheckmarkCircle />
+                Send tips to your favourite content creator 
+              </Text>
+            </Box>
+          </Box>
       <Box sx={styles.thumbnail}>
         <Image src={FeatureThumb} alt="Thumbnail" />
-        <Box sx={styles.shapeBox}>
-          <Image src={shapePattern} alt="Shape"/>
-        </Box>
       </Box>
     </Container>
    </section>
@@ -75,4 +85,93 @@ const styles = {
     zIndex: -1,
     display: ['none', 'inline-block', 'none', null, 'inline-block'],
   },
+  boostAgencies: {
+    pt: ['70px', null, null, '80px', '120px', null, '130px'],
+  },
+  row: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    flexDirection: ['column', null, null, 'row-reverse'],
+  },
+  col: {
+    flex: ['0 0 100%', null, null, '0 0 50%'],
+  },
+  image: {
+    mt: ['25px', null, null, '0'],
+    display: 'flex',
+    marginLeft: ['0', null, null, null, 'auto'],
+    marginRight: ['0', null, null, null, 'auto'],
+    height: ['385px', null, null, 'auto'],
+    position: 'relative',
+    top: [null, null, null, '-20px', '-45px', 'auto'],
+  },
+  list: {
+    margin: 0,
+    padding: 0,
+    listStyle: 'none',
+    ml: ['25px', null, null, '0'],
+    mb: ['4px'],
+    mt: ['30px'],
+    li: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: ['flex-start', null, null, null, null, 'flex-start'],
+      fontSize: [1, null, 2, null, '18px'],
+      color: 'text_secondary',
+      lineHeight: [2.56],
+      svg: {
+        width: [17, null, null, 23],
+        height: [17, null, null, 23],
+        color: '#4B9F28',
+        borderRadius: '50%',
+        marginRight: ['10px'],
+      },
+    },
+  },
+  titleBox: {
+    textAlign: ['center', null, null, 'left'],
+    h3: {
+      color: 'black',
+      fontSize: [5, null, null, '21px', '36px', '32px', 8],
+      lineHeight: [1.6, null, null, '1.5'],
+      fontWeight: 'bold',
+      letterSpacing: ['-0.5px', null, null, null, null, null, '-1.5px'],
+    },
+    p: {
+      fontSize: [0, null, 2, null, '17px'],
+      color: 'text_secondary',
+      opacity: '.6',
+      lineHeight: ['26px', null, null, 1.8, null, 2.06],
+      padding: ['0 20px', null, null, '0'],
+      mt: ['15px'],
+    },
+  },
+  link: {
+    color: 'primary',
+    fontSize: [1, null, 2],
+    display: 'inline-block',
+    verticalAlign: 'middle',
+    fontWeight: 'bold',
+    pl: ['30px', null, null, '4px', null, '4px'],
+    mt: ['5px', null, null, null, '10px'],
+    svg: {
+      position: 'relative',
+      top: '3px',
+    },
+  },
+  content: {
+    width: '100%',
+    textAlign: ['left', null, null, null, 'left'],
+    pt: [null, null, null, null, null, '10px'],
+    pl: [null, null, null, null, null, '60px', '140px'],
+  },
+
+
+
+
+
+
+
+
+
 };

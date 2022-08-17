@@ -9,6 +9,8 @@ import KeyFeature from '../sections/key-feature';
 import ServiceSection from '../sections/service-section';
 import Feature from '../sections/feature';
 import CoreFeature from '../sections/core-feature';
+import VideoOne from '../sections/video-one';
+import CoreFeaturetwo from '../sections/core-featuretwo';
 import WorkFlow from '../sections/workflow';
 import Package from '../sections/package';
 import TeamSection from '../sections/team-section';
@@ -22,15 +24,18 @@ export default function Home() {
           <SEO title="Bitvia Chat DApp" />
           <Banner />
           <KeyFeature /> 
-          <ServiceSection />
+          {/*<ServiceSection />
           <Feature /> 
           <Link href="/chat">
           <a>Go to App</a>
-        </Link>
+        </Link>*/} 
+          <CoreFeature />
+          <VideoOne />
+          <CoreFeaturetwo/>
           <WorkFlow />
-          <Package />
+          {/*<Package />*/}
           <TeamSection />
-          <TestimonialCard />
+          {/*<TestimonialCard />*/}
         </Layout>
     </ThemeProvider>
   );
