@@ -91,7 +91,7 @@ export default function LskHome() {
   }
   
   async function autoLogin() {
-    console.log("autoLogin");
+    // console.log("autoLogin");
     web3 = new Web3(window.ethereum);
     web3.eth.handleRevert = true;
     // console.log(web3);
@@ -100,7 +100,7 @@ export default function LskHome() {
     
     let address = await web3.eth.getAccounts();
     
-    console.log(address);
+    // console.log(address);
     if (!(address && address[0])) {
       address = await web3.eth.requestAccounts();
     }
@@ -135,7 +135,7 @@ export default function LskHome() {
       let present = await contract.methods.checkUserExists(address).call();
       
       let myFProfile = await getProfileData(address);
-      console.log(myFProfile);
+      // console.log(myFProfile);
       // console.log(await fetchProfile(address));
 
       let username;
@@ -184,7 +184,7 @@ export default function LskHome() {
 
   async function makeFriendViaInvitationLink() {
     if (router.query && router.query.invite) {
-      console.log("makeFriendViaInvitationLink");
+      // console.log("makeFriendViaInvitationLink");
       setLoadingActive(true);
 
       await addChat(undefined, router.query.invite);
@@ -214,7 +214,7 @@ export default function LskHome() {
 
   // Add a friend to the users' Friends List
   async function addChat(name, publicKey) {
-    console.log(myContract);
+    // console.log(myContract);
     try {
       setLoadingActive(true);
 
@@ -226,18 +226,18 @@ export default function LskHome() {
         return;
       }
       try {
-        console.log("myAddress:"+myAddress+ " > "+present);
+        // console.log("myAddress:"+myAddress+ " > "+present);
 
         var frProfile = await getProfileData(publicKey);
         var userType = 1;
         if (name) {
-          console.log("name:"+name);
+          // console.log("name:"+name);
           await myContract.methods.addFriend(publicKey, name).send({
             from : myAddress
           });
         } else {
-          console.log("add default friend");
-          console.log(publicKey);
+          // console.log("add default friend");
+          // console.log(publicKey);
           await myContract.methods.addDefaultFriend(publicKey).send({
             from : myAddress
           });
@@ -311,15 +311,15 @@ export default function LskHome() {
           setLoadingActive(false);
 
         } catch(err2) {
-          console.log(err2);
+          // console.log(err2);
           setLoadingActive(false);
 
           setShowAlert({show: true, title: "INFO", content: "Please check again your input or you have no right to create this group.\nError message:"+err2.message});
         };
 
       } catch (err1) {
-        console.log(err1);
-        console.log(err1.message);
+        // console.log(err1);
+        // console.log(err1.message);
         setLoadingActive(false);
 
         setShowAlert({show: true, title: "INFO", content: "Your group address is already added.\nError message:"+err1.message});
@@ -513,7 +513,7 @@ export default function LskHome() {
   // This executes every time page renders and when myPublicKey or myContract changes
 
   async function loadFriends() {
-    console.log("loadFriends");
+    // console.log("loadFriends");
     let friendList = [];
     // Get Friends
     try {
@@ -572,11 +572,11 @@ export default function LskHome() {
   }
 
   useEffect(() => {
-    console.log("useEffect");
+    // console.log("useEffect");
     if (myContract) {
       // console.log("before load friends");
       loadFriends();
-      console.log(friends);
+      // console.log(friends);
       if (friends) {
         makeFriendViaInvitationLink();
       }
@@ -613,6 +613,7 @@ export default function LskHome() {
         if (friend.name.toLowerCase().indexOf(searchText.toLowerCase())>-1 || friend.publicKey.toLowerCase().indexOf(searchText.toLowerCase())>-1) {
           return (
             <ChatCard
+              key={friend.publicKey}
               publicKey={friend.publicKey}
               name={friend.name}
               avatar={friend.avatar}
@@ -631,10 +632,10 @@ export default function LskHome() {
   function findNotInChat() {
     if (searchText && friends) {
 
-      console.log(allUsers);
-      console.log(friends);
+      // console.log(allUsers);
+      // console.log(friends);
       var pbFriends = friends.map(x => x.publicKey);
-      console.log(pbFriends);
+      // console.log(pbFriends);
       var userList = [];
       for (var ui in allUsers) {
         if (!pbFriends.includes(allUsers[ui][1]) && allUsers[ui][1]!=myPublicKey ) {

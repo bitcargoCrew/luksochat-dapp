@@ -33,7 +33,7 @@ export function SeeProfile(props) {
     >
       {props.showAvatar 
         ? <div style={{ "paddingRight" : "10px", "paddingTop": "2px" }} onClick={handleShow}>
-            <Image avatar src={props.fullProfile.avatar} />
+            <Image avatar={true} src={props.fullProfile.avatar} />
             {props.fullProfile.name}
           </div>
         : <Image 
@@ -70,7 +70,7 @@ export function SeeProfile(props) {
                 <h6 style={{textAlign: "center"}}>
                   Links <br/>
                   {links.map((l)=>{
-                    return <a href={l["url"]} >{l["title"]}</a>
+                    return <a key={l["url"]} href={l["url"]} >{l["title"]}</a>
                   })}
                 </h6>
               </>

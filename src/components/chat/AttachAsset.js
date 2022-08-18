@@ -103,7 +103,7 @@ export function AttachAsset(props) {
         disabled={ !(props.currActivFriend.publicKey) }
         > */}
         <Image 
-          src="attach.svg" avatar 
+          src="attach.svg" avatar="true"
           style={{cursor: "pointer"}} 
           onClick={handleShow} 
           disabled={ !(props.currActivFriend.publicKey) } 
