@@ -27,14 +27,17 @@ import InputEmoji from 'react-input-emoji'
 
 // Add the contract address inside the quotes
 const CONTRACT_ADDRESS = "0x8E9b55C8948BF8c55ED43f8698264255eAfc6E2e";
-const DEFAULT_AVATAR = "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/default-avatar.png"
+// const DEFAULT_AVATAR = "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/default-avatar.png"
+const DEFAULT_AVATAR = "logo.svg"
+
 export default function LskHome() {
   const [friends, setFriends] = useState(null);
   const [myName, setMyName] = useState(null);
   const [myAvatar, setMyAvatar] = useState("");
   const [myPublicKey, setMyPublicKey] = useState(null);
-  const [ msgText, setMsgText ] = useState('')
-  const [ searchText, setSearchText ] = useState('')
+  const [myProfile, setMyProfile] = useState({});
+  const [ msgText, setMsgText ] = useState('');
+  const [ searchText, setSearchText ] = useState('');
 
   const [ loadingActive, setLoadingActive ] = useState(false);
 
@@ -131,15 +134,15 @@ export default function LskHome() {
       
       let present = await contract.methods.checkUserExists(address).call();
       
-      let myProfile = await getProfileData(address);
-
-      console.log(await fetchProfile(address));
+      let myFProfile = await getProfileData(address);
+      console.log(myFProfile);
+      // console.log(await fetchProfile(address));
 
       let username;
       if (present) {
         username = await contract.methods.getUsername(address).call();
-      } else if (myProfile.name) {
-        username = myProfile.name;
+      } else if (myFProfile.name) {
+        username = myFProfile.name;
         await contract.methods.createAccount(username).send({
           from : address
         });
@@ -152,11 +155,21 @@ export default function LskHome() {
         console.log("You do not have universal profile yet, please create one");
       }
       
-      if (myProfile && myProfile.profileImage && myProfile.profileImage[0]) {
-        setMyAvatar((myProfile.profileImage[0].url).replace("ipfs://", "https://ipfs.io/ipfs/"));
+
+      var myFullProfile = {};
+      myFullProfile.name = username;
+      myFullProfile.profile = myFProfile;
+      myFullProfile.publicKey = address;
+
+      if (myFProfile && myFProfile.profileImage && myFProfile.profileImage[0]) {
+        var fAvatar = (myFProfile.profileImage[0].url).replace("ipfs://", "https://ipfs.io/ipfs/");
+        setMyAvatar(fAvatar);
+        myFullProfile.avatar=fAvatar;
       }
       setMyName(username);
       setShowConnectButton("none");
+
+      setMyProfile(myFullProfile);
       // fnRandomGroupId();
       // await makeFriendViaInvitationLink();
     } catch (err) {
@@ -604,6 +617,7 @@ export default function LskHome() {
               name={friend.name}
               avatar={friend.avatar}
               isFriend={true}
+              fullProfile={friend}
               getMessages={async (key) => {
                 await getMessage(key);
                 scrollToBottom();
@@ -636,7 +650,8 @@ export default function LskHome() {
         }
       }
       // console.log(userList);
-      var frAvatar = "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/default-avatar.png";
+      // var frAvatar = "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/default-avatar.png";
+      var frAvatar = DEFAULT_AVATAR;
 
       return userList.map((friend) => {
           return (
@@ -746,6 +761,7 @@ export default function LskHome() {
         username={myName}
         avatar={myAvatar}
         publicKey={myPublicKey}
+        fullProfile={myProfile}
         logout={async () => logout()}
         login={async () => login()}
         showButton={showConnectButton}

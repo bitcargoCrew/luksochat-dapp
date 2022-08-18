@@ -16,5 +16,7 @@ export { AttachAsset } from "./AttachAsset";
 export {ModelAlert} from "./ModelAlert"
 export {ShareModal} from "./ShareModal"
 
+export {SeeProfile} from "./SeeProfile"
+
 export {Loading} from "./loadingShow"
 

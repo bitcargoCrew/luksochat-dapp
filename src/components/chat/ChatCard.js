@@ -3,6 +3,10 @@ import { Row, Card } from "react-bootstrap";
 // import "bootstrap/dist/css/bootstrap.min.css";
 import { Image } from 'semantic-ui-react'
 
+import {
+  SeeProfile
+} from "./Components.js";
+
 // This is a function which renders the friends in the friends list
 export function ChatCard(props) {
   return (
@@ -20,9 +24,9 @@ export function ChatCard(props) {
           <Card.Title> 
             <Image src={props.avatar} avatar />
             {props.name} 
-            <a href={"https://universalpage.dev/profiles/"+props.publicKey}>
-              <Image src="universalpage.png" style={{"width": "20px", "height": "20px", "float": "right"}}/>
-            </a>
+            <SeeProfile
+              fullProfile={props.fullProfile}
+            />
           </Card.Title>
           <Card.Subtitle>
             {" "}
