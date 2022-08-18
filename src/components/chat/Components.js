@@ -20,3 +20,5 @@ export {SeeProfile} from "./SeeProfile"
 
 export {Loading} from "./loadingShow"
 
+export {VoteManagement} from "./VoteManagement"
+

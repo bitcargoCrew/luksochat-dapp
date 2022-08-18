@@ -12,7 +12,8 @@ import {
   AttachAsset,
   ModelAlert,
   ShareModal,
-  Loading
+  Loading,
+  VoteManagement
 } from "./Components.js";
 // import { ethers } from "ethers";
 // import { abi } from "./abi";
@@ -377,8 +378,11 @@ export default function LskHome() {
       await myContract.methods.sendMessage(recieverAddress, data).send({
         from : myAddress
       });
-      refreshActiveMsg();
+      // refreshActiveMsg();
+      await getMessage(activeChat.publicKey);
       setLoadingActive(false);
+      scrollToBottom();
+
     }catch(e) {
       console.log(e);
       setLoadingActive(false);
@@ -395,6 +399,56 @@ export default function LskHome() {
     }
 
     return {name : "Unknown"};
+  }
+
+  function collectFuncInMessage(publicKey, data, targetVotingAddress) {
+    // #vote/create/id/title/description
+    // #vote/vote/id/value
+    // #vote/show/id
+    // #vote/close/id
+    if (data.indexOf("#")==0) {
+      // console.log(data);
+      var lsDt = data.split("/");
+      if (lsDt[0]=="#vote"){
+        if (lsDt[1]=="create") {
+          window.vote[lsDt[2]]={
+            id : lsDt[2],
+            title : lsDt[3],
+            description: lsDt[4],
+            targetVotingAddress,
+            votes : {},
+            voteAcc : {}
+          }
+          return "<i><b><u>Bot: </u></b></i><i>Has created a poll, lets vote</i>";
+        } else if (lsDt[1]=="vote" && window.vote[lsDt[2]].votes) {
+          if (!window.vote[lsDt[2]].voteAcc[publicKey]) {
+            var currValue = window.vote[lsDt[2]].votes[lsDt[3]];
+            window.vote[lsDt[2]].votes[lsDt[3]] = (currValue ? currValue : 0 ) + 1;
+            window.vote[lsDt[2]].voteAcc[publicKey]=lsDt[3];
+            return "<i><b><u>Bot: </u></b></i><i>Has a vote for "+lsDt[3]+"</i>";
+          }
+          return "<i><b><u>Bot:</u></b></i><i>Has a vote for "+lsDt[3]+" but it is a duplicated vote, the next votes are not valid</i>";
+        } else if (lsDt[1]=="show" && window.vote[lsDt[2]].votes) {
+          var rs = "<i><b><u>Bot: </u></b></i><i>Vote id "+lsDt[2]+" : "+window.vote[lsDt[2]].title+"<br/> Description:"+window.vote[lsDt[2]].description+"</i><br/>";
+          var lsRs = window.vote[lsDt[2]].votes;
+          for(var vi in lsRs) {
+            rs += "<i> • " + vi + ":" + lsRs[vi]+"</i><br/>"
+          }
+          return rs;
+        } else if (lsDt[1]=="close") {
+          var rs = "<i><b><u>Bot: </u></b></i><i>Vote id "+lsDt[2]+" : "+window.vote[lsDt[2]].title+"<br/> Description:"+window.vote[lsDt[2]].description+"</i><br/>";
+          var lsRs = window.vote[lsDt[2]].votes;
+          for(var vi in lsRs) {
+            rs += "<i> • " + vi + ":" + lsRs[vi]+"</i><br/>"
+          }
+          rs += "<i>The vote has been requested to close, thank for your contribution</i>"
+          window.vote[lsDt[2]] = {};
+          return rs;
+        }
+      }
+      return "<i><b><u>Bot: </u></b></i><i>has created an invalid query, it will be not visible</i>"
+    }
+    return data;
   }
 
   // Fetch chat messages with a friend
@@ -420,12 +474,14 @@ export default function LskHome() {
       from: myAddress
     });
 
+    window.vote = {};
+
     data.forEach((item) => {
       const timestamp = new Date(1000 * parseInt(item[1])).toUTCString();
       messages.push({
         publicKey: item[0],
         timeStamp: timestamp,
-        data: item[2],
+        data: collectFuncInMessage(item[0], item[2], friendsPublicKey)
       });
     });
 
@@ -900,13 +956,21 @@ export default function LskHome() {
                     />
                   </Col>
                   <Col xs={1}>
-                    <AttachAsset
-                      name={myName}
-                      address={myPublicKey}
-                      currActivFriend={activeChat}
-                      sendNoti={onSendMsgText}
-                      setLoadingActive={setLoadingActive}
-                    />
+                    {activeChat && activeChat.userType==1 
+                      ? <AttachAsset
+                          name={myName}
+                          address={myPublicKey}
+                          currActivFriend={activeChat}
+                          sendNoti={onSendMsgText}
+                          setLoadingActive={setLoadingActive}
+                        />
+                      : <></>}
+                    {activeChat && activeChat.userType==2
+                      ? <VoteManagement
+                          address={myPublicKey}
+                          sendNoti={onSendMsgText}
+                        />
+                      : <></>}
                   </Col>
                 </Form.Row>
               </Form>
