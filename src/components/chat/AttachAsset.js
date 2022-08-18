@@ -24,10 +24,10 @@ export function AttachAsset(props) {
   }
 
   async function updateMyAssetList() {
-    console.log("updateMyAssetList");
-    console.log(props.address);
+    // console.log("updateMyAssetList");
+    // console.log(props.address);
     const myAls = await getLSP5ReceivedAssets(props.address);
-    console.log(myAls);
+    // console.log(myAls);
     setMyAssetList(myAls);
   }
 
@@ -41,21 +41,21 @@ export function AttachAsset(props) {
         var tokenAddress = selectedToken.address;
         // var amount = parseInt(document.getElementById("amount").value);
 
-        console.log(tokenAddress + " : " + amount + " : " + toAddr + " "+ tokenAddress);
+        // console.log(tokenAddress + " : " + amount + " : " + toAddr + " "+ tokenAddress);
         const tx = await sendLSP7Token(fromAddr, toAddr, amount, tokenAddress);
 
         await props.sendNoti(props.name+" has just sent "+amount+" "+selectedToken.name+" (LSK7Token) to "+props.currActivFriend.friendname+" at <a href='https://explorer.execution.l16.lukso.network/tx/"+tx.transactionHash+"'>txhash</a>");
         setShow(false);
 
       } else if (selectedTab == "lyx") {
-        console.log(amount);
-        console.log( "Send LYX : " + amount + " : " + toAddr + " "+ tokenAddress);
+        // console.log(amount);
+        // console.log( "Send LYX : " + amount + " : " + toAddr + " "+ tokenAddress);
         const tx = await sendLYX(fromAddr, toAddr, amount);
 
         await props.sendNoti(props.name+" has just sent "+amount+" LYX to "+props.currActivFriend.friendname+" at <a href='https://explorer.execution.l16.lukso.network/tx/"+tx.transactionHash+"'>txhash</a>");
         setShow(false);
       } else if (selectedTab == "nft") {
-        console.log(selectedToken);
+        // console.log(selectedToken);
         var tokenAddress = selectedToken.address;
         var tokenId = selectedToken.id;
         const tx = await sendLSP8Token(fromAddr, toAddr, tokenId, tokenAddress);
@@ -97,20 +97,20 @@ export function AttachAsset(props) {
       style={{
         padding: "10px",
       }}
+      key="attachasset"
     >
-      {/* <Button 
-        variant="success" className="mb-2" onClick={handleShow}
-        disabled={ !(props.currActivFriend.publicKey) }
-        > */}
         <Image 
           src="attach.svg" avatar="true"
           style={{cursor: "pointer"}} 
-          onClick={handleShow} 
-          disabled={ !(props.currActivFriend.publicKey) } 
+          onClick={() => {
+            if (props.currActivFriend.publicKey && props.currActivFriend.userType==1) {
+              handleShow();
+            }
+          }}
         ></Image>
         {/* // Attach */}
       {/* // </Button> */}
-      <Modal show={show && props.currActivFriend.publicKey} onHide={handleClose}>
+      <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title> Attach and send to  {props.currActivFriend.friendname} </Modal.Title>
         </Modal.Header>

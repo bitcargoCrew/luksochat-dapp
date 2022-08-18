@@ -365,15 +365,19 @@ export default function LskHome() {
   // Sends messsage to an user
   async function sendMessage(data) {
     if (!(activeChat && activeChat.publicKey)) return;
-    setLoadingActive(true);
+    try{
+      setLoadingActive(true);
 
-    const recieverAddress = activeChat.publicKey;
-    await myContract.methods.sendMessage(recieverAddress, data).send({
-      from : myAddress
-    });
-    refreshActiveMsg();
-    setLoadingActive(false);
-
+      const recieverAddress = activeChat.publicKey;
+      await myContract.methods.sendMessage(recieverAddress, data).send({
+        from : myAddress
+      });
+      refreshActiveMsg();
+      setLoadingActive(false);
+    }catch(e) {
+      setLoadingActive(false);
+      setShowAlert({show: true, title: "WARNING", content: "We can not send your messsage. ERROR:"+e.message});
+    }
   }
 
   function getFriendInfor(friendsPublicKey) {
@@ -597,6 +601,7 @@ export default function LskHome() {
         // console.log("msg:"+index + " ");
         return (
           <Message
+            key={message.publicKey+message.timeStamp}
             marginLeft={margin}
             sender={activeChat.userType==1 || sender == "You" ? sender : getFriendInfor(message.publicKey).name}
             avatar={sender == "You" ? myAvatar :  getFriendInfor(message.publicKey).avatar}

@@ -11,16 +11,16 @@ export function SeeProfile(props) {
   const handleShow = () => setShow(true);
 
   var background = "background.png";
-  if (props.fullProfile.profile && props.fullProfile.profile.backgroundImage && props.fullProfile.profile.backgroundImage[0] && props.fullProfile.profile.backgroundImage[0].url ) {
+  if (props.fullProfile && props.fullProfile.profile && props.fullProfile.profile.backgroundImage && props.fullProfile.profile.backgroundImage[0] && props.fullProfile.profile.backgroundImage[0].url ) {
     background = props.fullProfile.profile.backgroundImage[0].url.replace("ipfs://", "https://ipfs.io/ipfs/");
   }
 
   var avatar = DEFAULT_AVATAR;
   var links = []
-  if (props.fullProfile.profile && props.fullProfile.profile.links) {
+  if (props.fullProfile && props.fullProfile.profile && props.fullProfile.profile.links) {
     links = props.fullProfile.profile.links;
   }
-  if (props.fullProfile.avatar) {
+  if (props.fullProfile && props.fullProfile.avatar) {
     avatar = props.fullProfile.avatar;
   }
 
@@ -44,15 +44,15 @@ export function SeeProfile(props) {
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title> 
-            {props.fullProfile.name}<br/>
+            {props.fullProfile?.name}<br/>
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <InputGroup className="mb-3">
             <InputGroup.Text>Address</InputGroup.Text>
-            <Form.Control value={props.fullProfile.publicKey} />
+            <Form.Control value={props.fullProfile?.publicKey} />
           </InputGroup>
-          <h5 style={{textAlign: "center"}}>{props.fullProfile.profile?.description}</h5>
+          <h5 style={{textAlign: "center"}}>{props.fullProfile?.profile?.description}</h5>
           <div style={{width : "470px", height: "470px", backgroundImage : "url("+background+")", backgroundSize: "cover"}}>
             {/* <Image  src={background} /> */}
             <div style={{
