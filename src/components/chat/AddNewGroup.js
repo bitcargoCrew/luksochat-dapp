@@ -17,7 +17,10 @@ export function AddNewGroup(props) {
         padding: "10px",
       }}
     >
-      <Button variant="success" className="mb-2" onClick={handleShow}>
+      <Button variant="success" className="mb-2" onClick={()=>{
+        handleShow();
+        setPublicKey(window.web3.utils.randomHex(20));
+      }}>
         + New Group
       </Button>
       <Modal show={show} onHide={handleClose}>

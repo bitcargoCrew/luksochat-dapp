@@ -52,25 +52,6 @@
 		{
 			"inputs": [
 				{
-					"internalType": "address",
-					"name": "pubkey",
-					"type": "address"
-				}
-			],
-			"name": "checkUserExists",
-			"outputs": [
-				{
-					"internalType": "bool",
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"inputs": [
-				{
 					"internalType": "string",
 					"name": "name",
 					"type": "string"
@@ -107,6 +88,43 @@
 			"name": "createGroup",
 			"outputs": [],
 			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "friend_key",
+					"type": "address"
+				},
+				{
+					"internalType": "string",
+					"name": "_msg",
+					"type": "string"
+				}
+			],
+			"name": "sendMessage",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "pubkey",
+					"type": "address"
+				}
+			],
+			"name": "checkUserExists",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"stateMutability": "view",
 			"type": "function"
 		},
 		{
@@ -192,24 +210,6 @@
 				}
 			],
 			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "friend_key",
-					"type": "address"
-				},
-				{
-					"internalType": "string",
-					"name": "_msg",
-					"type": "string"
-				}
-			],
-			"name": "sendMessage",
-			"outputs": [],
-			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{

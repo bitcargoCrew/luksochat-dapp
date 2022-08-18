@@ -26,7 +26,7 @@ import { Image } from 'semantic-ui-react'
 import InputEmoji from 'react-input-emoji'
 
 // Add the contract address inside the quotes
-const CONTRACT_ADDRESS = "0x8E9b55C8948BF8c55ED43f8698264255eAfc6E2e";
+const CONTRACT_ADDRESS = "0x415fDE023C66c4107ac377BB5eD5c9B6D33D1aC4";
 // const DEFAULT_AVATAR = "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/default-avatar.png"
 const DEFAULT_AVATAR = "logo.svg"
 
@@ -45,6 +45,7 @@ export default function LskHome() {
   const [showAlert, setShowAlert] = useState({show : false, title: "Error", content: "Error"});
   const [ allUsers, setAllUsers ] = useState([])
   const [effectStep, setEffectStep] = useState(0);
+
   const router = useRouter()
 
   const [activeChat, setActiveChat] = useState({
@@ -80,6 +81,8 @@ export default function LskHome() {
   }
   // Login to Metamask and check the if the user exists else creates one
   async function login() {
+    // setLoadingActive(true);
+
     web3 = new Web3(window.ethereum);
     web3.eth.handleRevert = true;
     // console.log(web3);
@@ -88,6 +91,9 @@ export default function LskHome() {
 
     var address = await web3.eth.requestAccounts();
     await autoLogin();
+    
+    // setLoadingActive(false);
+
   }
   
   async function autoLogin() {
@@ -297,7 +303,7 @@ export default function LskHome() {
     try {
       // publicKey = "0x9a5aaD239C4485861B05051bFB506EfdbEe92b25";
       try {
-        // console.log("myAddress:"+myAddress+ " > "+ name, publicKey, isAssetGroup);
+        // console.log("myAddress:"+myAddress+ " > "+ name, publicKey, isAssetGroup, avatar);
         // console.log(myContract.methods);
 
         setLoadingActive(true);
@@ -309,9 +315,8 @@ export default function LskHome() {
           const frnd = { name: name, publicKey: publicKey, userType : 2,  avatar: avatar};
           setFriends(friends.concat(frnd));
           setLoadingActive(false);
-
         } catch(err2) {
-          // console.log(err2);
+          console.log(err2);k
           setLoadingActive(false);
 
           setShowAlert({show: true, title: "INFO", content: "Please check again your input or you have no right to create this group.\nError message:"+err2.message});
@@ -375,6 +380,7 @@ export default function LskHome() {
       refreshActiveMsg();
       setLoadingActive(false);
     }catch(e) {
+      console.log(e);
       setLoadingActive(false);
       setShowAlert({show: true, title: "WARNING", content: "We can not send your messsage. ERROR:"+e.message});
     }
@@ -744,8 +750,10 @@ export default function LskHome() {
 
   function divGroupCreate() {
     if (myPublicKey) {
+      // setRandomAddress(window.web3.utils.randomHex(20));
+
       return (<AddNewGroup
-        randomAddress={  window.web3.utils.randomHex(20) }
+        randomAddress={window.web3.utils.randomHex(20)}
         myContract={myContract}
         addHandler={(name, publicKey, isAssetGroup, avatar) => addGroup(name, publicKey, isAssetGroup, avatar)}
       />)
