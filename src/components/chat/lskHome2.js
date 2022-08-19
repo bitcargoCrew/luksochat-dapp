@@ -411,7 +411,7 @@ export default function LskHome() {
       var lsDt = data.split("/");
       if (lsDt[0]=="#vote"){
         if (lsDt[1]=="create") {
-          window.vote[lsDt[2]]={
+          window.vote={
             id : lsDt[2],
             title : lsDt[3],
             description: lsDt[4],
@@ -419,30 +419,34 @@ export default function LskHome() {
             votes : {},
             voteAcc : {}
           }
-          return "<i><b><u>Bot: </u></b></i><i>Has created a poll, lets vote</i>";
-        } else if (lsDt[1]=="vote" && window.vote[lsDt[2]].votes) {
-          if (!window.vote[lsDt[2]].voteAcc[publicKey]) {
-            var currValue = window.vote[lsDt[2]].votes[lsDt[3]];
-            window.vote[lsDt[2]].votes[lsDt[3]] = (currValue ? currValue : 0 ) + 1;
-            window.vote[lsDt[2]].voteAcc[publicKey]=lsDt[3];
-            return "<i><b><u>Bot: </u></b></i><i>Has a vote for "+lsDt[3]+"</i>";
+          return "<i><b><u>Bot: </u></b></i><i>Has created a poll:"+lsDt[3]+", lets vote</i>";
+        } else if (lsDt[1]=="vote" && window.vote.votes) {
+          if (!window.vote.voteAcc[publicKey]) {
+            var currValue = window.vote.votes[lsDt[3]];
+            window.vote.votes[lsDt[3]] = (currValue ? currValue : 0 ) + 1;
+            window.vote.voteAcc[publicKey]=lsDt[3];
+            return "<i><b><u>Bot: </u></b></i><i>Has a vote '"+window.vote.title+"' for "+lsDt[3]+"</i>";
           }
           return "<i><b><u>Bot:</u></b></i><i>Has a vote for "+lsDt[3]+" but it is a duplicated vote, the next votes are not valid</i>";
-        } else if (lsDt[1]=="show" && window.vote[lsDt[2]].votes) {
-          var rs = "<i><b><u>Bot: </u></b></i><i>Vote id "+lsDt[2]+" : "+window.vote[lsDt[2]].title+"<br/> Description:"+window.vote[lsDt[2]].description+"</i><br/>";
-          var lsRs = window.vote[lsDt[2]].votes;
+        } else if (lsDt[1]=="show" && window.vote.votes) {
+          var rs = "<i><b><u>Bot: </u></b></i><i>Vote id "+lsDt[2]+" : "+window.vote.title+"<br/> Description:"+window.vote.description+"</i><br/>";
+          var lsRs = window.vote.votes;
           for(var vi in lsRs) {
             rs += "<i> • " + vi + ":" + lsRs[vi]+"</i><br/>"
           }
           return rs;
         } else if (lsDt[1]=="close") {
-          var rs = "<i><b><u>Bot: </u></b></i><i>Vote id "+lsDt[2]+" : "+window.vote[lsDt[2]].title+"<br/> Description:"+window.vote[lsDt[2]].description+"</i><br/>";
-          var lsRs = window.vote[lsDt[2]].votes;
+          var rs = "<i><b><u>Bot: </u></b></i><i>Vote id "+lsDt[2]+" : "+window.vote.title+"<br/> Description:"+window.vote.description+"</i><br/>";
+          var lsRs = window.vote.votes;
+          var totalVote = 0;
           for(var vi in lsRs) {
-            rs += "<i> • " + vi + ":" + lsRs[vi]+"</i><br/>"
+            totalVote += lsRs[vi];
+          }
+          for(var vi in lsRs) {
+            rs += "<i> • " + vi + " : " + parseInt(lsRs[vi]*100/totalVote) +"%</i><br/>"
           }
           rs += "<i>The vote has been requested to close, thank for your contribution</i>"
-          window.vote[lsDt[2]] = {};
+          window.vote = {};
           return rs;
         }
       }
