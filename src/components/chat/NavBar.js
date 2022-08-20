@@ -14,7 +14,9 @@ export function NavBar(props) {
         backgroundColor: "#DCDCDC"
       }}
     >
-      <Navbar.Brand href="#home">Chat App</Navbar.Brand>
+      <Navbar.Brand href="/">
+        <Image src="logo-full.svg" style={{height: "39px", paddingLeft : "4px"}} />
+      </Navbar.Brand>
       <Navbar.Toggle />
       <Navbar.Collapse className="justify-content-end">
         <Navbar.Text>

@@ -19,7 +19,7 @@ import {
 // import { abi } from "./abi";
 import Web3 from 'web3';
 
-import {getProfileData, fetchProfile, getLSP5ReceivedAssets} from "./ReadProfileFn.js";
+import {getProfileData, fetchProfile, getBackground} from "./ReadProfileFn.js";
 
 import chatDatabaseABI from "./chat_database.json";
 import { Image } from 'semantic-ui-react'
@@ -930,7 +930,7 @@ export default function LskHome() {
             {/* The messages will be shown here */}
             <div
               className="MessageBox"
-              style={{ height: "400px", overflowY: "auto" }}
+              style={{ ...getBackground(), height: "400px", overflowY: "auto" }}
             >
               {Messages}
               <div style={{ float:"left", clear: "both" }}
