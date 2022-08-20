@@ -9,7 +9,7 @@ export function ShareModal(props) {
   const handleShow = () => setShow(true);
   return (
     <div style={{paddingRight: "5px"}} >
-      <Image src="share.svg" style={{padding: "3px", cursor: "pointer"}} onClick={handleShow}></Image>
+      <Image src="share.svg" style={{paddingRight: "10px", cursor: "pointer"}} onClick={handleShow}></Image>
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title> Share to the social media </Modal.Title>

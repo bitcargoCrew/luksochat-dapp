@@ -823,7 +823,7 @@ export default function LskHome() {
   }
 
   return (
-    <Container style={{ padding: "0px", border: "1px solid grey" }}>
+    <div style={{ padding: "0px"}}>
       {/* This shows the navbar with connect button */}
       <ModelAlert 
         showAlert={showAlert}
@@ -840,7 +840,7 @@ export default function LskHome() {
         login={async () => login()}
         showButton={showConnectButton}
       />
-      <Row>
+      <Row style={{height: "100%"}}>
         {/* Here the friends list is shown */}
         <Col style={{ paddingRight: "0px", borderRight: "1px solid grey" }}>
           <div
@@ -870,7 +870,7 @@ export default function LskHome() {
               </Card>
             </Row>
             <div
-              style={{ height: "405px", overflowY: "auto", paddingTop: "2mm" }}
+              style={{ height: "490px", overflowY: "auto", paddingTop: "2mm" }}
             >
               {chats}
               {(searchText 
@@ -930,7 +930,7 @@ export default function LskHome() {
             {/* The messages will be shown here */}
             <div
               className="MessageBox"
-              style={{ height: "400px", overflowY: "auto" }}
+              style={{ height: "480px", overflowY: "auto" }}
             >
               {Messages}
               <div style={{ float:"left", clear: "both" }}
@@ -982,6 +982,6 @@ export default function LskHome() {
           </div>
         </Col>
       </Row>
-    </Container>
+    </div>
   );
 }

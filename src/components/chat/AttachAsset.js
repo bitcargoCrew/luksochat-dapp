@@ -95,7 +95,6 @@ export function AttachAsset(props) {
   return (
     <div
       style={{
-        padding: "10px",
       }}
       key="attachasset"
     >

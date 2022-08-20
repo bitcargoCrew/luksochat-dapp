@@ -56,7 +56,7 @@ export function AddNewGroup(props) {
             />
             <br />
             <Form.Check
-              label="is this a group of asset owner"
+              label="is this an asset owner group? Please save the asset address in the first field"
               type="checkbox"
               id="isAssetGroup"
             />
