@@ -117,6 +117,7 @@ export function VoteManagement(props) {
       style={{
         padding: "10px",
       }}
+      key="VoteManagement"
     >
       <Image 
           src="vote.svg"

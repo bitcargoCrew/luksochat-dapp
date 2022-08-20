@@ -13,7 +13,7 @@ export function ChatCard(props) {
     <Row style={{ marginRight: "0px" }}>
       <Card
         border="success"
-        style={{ width: "100%", alignSelf: "center", marginLeft: "15px" }}
+        style={{ width: "100%", alignSelf: "center", marginLeft: "15px", padding : "0 10px" }}
         onClick={() => {
           if (props.isFriend) {
             props.getMessages(props.publicKey);

@@ -870,7 +870,7 @@ export default function LskHome() {
               </Card>
             </Row>
             <div
-              style={{ height: "603px", overflowY: "auto", paddingTop: "2mm" }}
+              style={{ height: "490px", overflowY: "auto", paddingTop: "2mm" }}
             >
               {chats}
               {(searchText 
@@ -930,7 +930,7 @@ export default function LskHome() {
             {/* The messages will be shown here */}
             <div
               className="MessageBox"
-              style={{ height: "580px", overflowY: "auto" }}
+              style={{ height: "400px", overflowY: "auto" }}
             >
               {Messages}
               <div style={{ float:"left", clear: "both" }}

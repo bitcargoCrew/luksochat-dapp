@@ -4,6 +4,10 @@ import { Button, Modal, Form, InputGroup } from "react-bootstrap";
 import { Image } from 'semantic-ui-react'
 const DEFAULT_AVATAR = "logo.svg"
 
+import {
+  UserAssets
+} from "./Components.js";
+
 // This Modal help Add a new friend
 export function SeeProfile(props) {
   const [show, setShow] = useState(false);
@@ -23,6 +27,7 @@ export function SeeProfile(props) {
   if (props.fullProfile && props.fullProfile.avatar) {
     avatar = props.fullProfile.avatar;
   }
+  // console.log(props);
 
   return (
     <div
@@ -50,7 +55,7 @@ export function SeeProfile(props) {
         <Modal.Body>
           <InputGroup className="mb-3">
             <InputGroup.Text>Address</InputGroup.Text>
-            <Form.Control value={props.fullProfile?.publicKey} />
+            <Form.Control defaultValue={props.fullProfile?.publicKey} />
           </InputGroup>
           <h5 style={{textAlign: "center"}}>{props.fullProfile?.profile?.description}</h5>
           <div style={{width : "470px", height: "470px", backgroundImage : "url("+background+")", backgroundSize: "cover"}}>
@@ -76,6 +81,11 @@ export function SeeProfile(props) {
               </>
             : <></>
           }
+        <hr/>
+        {props.fullProfile?.userType == 1 || props.showAvatar == true
+          ? <UserAssets address={props.fullProfile?.publicKey} />
+          : <></>}
+
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>

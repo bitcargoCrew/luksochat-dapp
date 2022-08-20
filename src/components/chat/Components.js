@@ -22,3 +22,4 @@ export {Loading} from "./loadingShow"
 
 export {VoteManagement} from "./VoteManagement"
 
+export {UserAssets} from "./UserAssets"

@@ -96,7 +96,7 @@ export function AttachAsset(props) {
     <div
       style={{
       }}
-      key="attachasset"
+      key={"attachasset"+(new Date().timestamp)}
     >
         <Image 
           src="attach.svg" avatar="true"
@@ -109,7 +109,10 @@ export function AttachAsset(props) {
         ></Image>
         {/* // Attach */}
       {/* // </Button> */}
-      <Modal show={show} onHide={handleClose}>
+      <Modal 
+        show={show} onHide={handleClose}
+        key={"attachasset-modal-"+(new Date().timestamp)}
+      >
         <Modal.Header closeButton>
           <Modal.Title> Attach and send to  {props.currActivFriend.friendname} </Modal.Title>
         </Modal.Header>
@@ -119,6 +122,7 @@ export function AttachAsset(props) {
             setSelectedTab(selectedTab);
           }}
           activeKey={selectedTab}
+          justify={true}
         >
           <Tab eventKey="lyx" title="LYX">
             <div style={{"paddingTop": "10px"}}>
