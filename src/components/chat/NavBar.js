@@ -11,7 +11,7 @@ export function NavBar(props) {
   return (
     <Navbar 
       style={{
-        backgroundColor: "#DCDCDC"
+        backgroundColor: "#cac9c9"
       }}
     >
       <Navbar.Brand href="/">

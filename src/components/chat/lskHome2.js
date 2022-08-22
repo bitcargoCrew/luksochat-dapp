@@ -845,7 +845,7 @@ export default function LskHome() {
         <Col style={{ paddingRight: "0px", borderRight: "1px solid grey" }}>
           <div
             style={{
-              backgroundColor: "#DCDCDC",
+              backgroundColor: "#cac9c9",
               height: "100%",
               overflowY: "auto",
             }}

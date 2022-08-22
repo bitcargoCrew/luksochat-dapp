@@ -22,7 +22,7 @@ export function Message(props) {
           right: "0px",
         }}
       >
-        <Card.Body>
+        <Card.Body style={{paddingTop:"10px", paddingBottom: "10px"}}>
           <h6 style={{ float: "right" }}>{gmtToLocalTime(props.timeStamp)}</h6>
           <Card.Subtitle>
             {/* <Image src={props.avatar} avatar /> */}
