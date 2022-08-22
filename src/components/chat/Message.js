@@ -15,7 +15,7 @@ export function Message(props) {
       <Card
         border="success"
         style={{
-          width: "80%",
+          width: "60%",
           alignSelf: "center",
           margin: "0 0 5px " + props.marginLeft,
           float: "right",
@@ -25,7 +25,7 @@ export function Message(props) {
         <Card.Body>
           <h6 style={{ float: "right" }}>{gmtToLocalTime(props.timeStamp)}</h6>
           <Card.Subtitle>
-            <Image src={props.avatar} avatar />
+            {/* <Image src={props.avatar} avatar /> */}
             <b>{props.sender}</b>
           </Card.Subtitle>
           <Card.Text dangerouslySetInnerHTML={{__html:props.data}}></Card.Text>

@@ -661,7 +661,7 @@ export default function LskHome() {
         let margin = "5%";
         let sender = activeChat.friendname;
         if (message.publicKey === myPublicKey) {
-          margin = "15%";
+          margin = "36%";
           sender = "You";
         }
         // console.log("msg:"+index + " ");
