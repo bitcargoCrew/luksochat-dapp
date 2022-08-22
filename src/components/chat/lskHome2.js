@@ -899,7 +899,7 @@ export default function LskHome() {
                 style={{
                   width: "100%",
                   alignSelf: "center",
-                  margin: "0 0 5px 15px",
+                  margin: "0 0 0 15px",
                 }}
               >
                 <Card.Header>
@@ -930,7 +930,7 @@ export default function LskHome() {
             {/* The messages will be shown here */}
             <div
               className="MessageBox"
-              style={{ ...getBackground(), height: "580px", overflowY: "auto" }}
+              style={{ ...getBackground(), height: "600px", overflowY: "auto" }}
             >
               {Messages}
               <div style={{ float:"left", clear: "both" }}

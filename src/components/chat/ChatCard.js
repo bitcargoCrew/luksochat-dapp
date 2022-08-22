@@ -30,9 +30,7 @@ export function ChatCard(props) {
           </Card.Title>
           <Card.Subtitle>
             {" "}
-            {props.publicKey.length > 28
-              ? props.publicKey.substring(0, 28) + " ..."
-              : props.publicKey}{" "}
+            {props.publicKey}
             {!props.isFriend 
               ? (<span 
                     style={{"height": "20px", "float": "right", border : "1px solid #28a745",   borderRadius: "5px" , padding : "1px" , cursor: "pointer" }}
