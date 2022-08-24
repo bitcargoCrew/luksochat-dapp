@@ -20,9 +20,9 @@ const VideoOne = () => {
           Chat, collaborate, and create
         </Heading>
         <Text as="p">
-          Bitvia provides a platform where peolpe united in interest, goals, or other commonalities               {' '}
+          Bitvia provides a platform where people can share their thoughts, build relationships
           <br />
-          come together to meet, connect, and build realtionships with each other
+          and help each other succeed in the new creative economy
         </Text>
 
         <Box sx={styles.videoBox}>

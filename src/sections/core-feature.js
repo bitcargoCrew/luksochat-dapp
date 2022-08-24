@@ -24,7 +24,7 @@ export default function CoreFeature() {
             </Text>
             <Text as="li">
               <IoIosCheckmarkCircle />
-                Use your Lukso Universal Profile as identity
+                Use your Lukso Universal Profile as your identity
             </Text>
              <Text as="li">
              <IoIosCheckmarkCircle />
@@ -32,11 +32,11 @@ export default function CoreFeature() {
               </Text>
               <Text as="li">
               <IoIosCheckmarkCircle />
-                Promote exclusive content via messaging 
+                Share messages, tokens and NFTs
               </Text>
               <Text as="li">
                 <IoIosCheckmarkCircle />
-                Send tips to your favourite content creator 
+                Promote your exclusive content in a simple way
               </Text>
             </Box>
           </Box>

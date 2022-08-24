@@ -99,7 +99,7 @@ export default function TeamSection() {
       <Container>
         <SectionHeader
           slogan="our team"
-          title="The most qualified and talented individuals"
+          title="We are three founders with a passion for decentralized applications"
         />
 
         <Grid sx={styles.grid}>

@@ -10,27 +10,27 @@ import ArrowEven from 'assets/arrowEven.svg';
 const data = [
   {
     id: 1,
-    title: 'Set disbursement Instructions',
+    title: 'Release alpha version of Bitvia',
     text:
-      'Get your blood tests delivered at home collect a sample from the your blood tests.',
+      'We are in the process of releasing Bitvia to a narrow group for testing.',
   },
   {
     id: 2,
-    title: 'Assembly retrieves funds from your account',
+    title: 'Add new features to the application',
     text:
-      'Get your blood tests delivered at home collect a sample from the your blood tests.',
+      'We will add many exciting features for creators, brands and influencers.',
   },
   {
     id: 3,
-    title: 'Assembly initiates disbursement',
+    title: 'Scale the number of users of the chat application',
     text:
-      'Get your blood tests delivered at home collect a sample from the your blood tests.',
+      'We want to make Bitvia a key player in the Lukso ecosystem.',
   },
   {
     id: 4,
-    title: 'Customer receives funds payment',
+    title: 'Promote the brand Bitvia and explore new opportunities',
     text:
-      'Get your blood tests delivered at home collect a sample from the your blood tests.',
+      'We do not want to just offer a chat application, but create an ecosystem around it.',
   },
 ];
 
@@ -39,8 +39,8 @@ export default function WorkFlow() {
     <section sx={styles.workflow}>
       <Container>
         <SectionHeader
-          slogan="Whats the function"
-          title="Let’s see how it works"
+          slogan="What the future of Bitvia looks like"
+          title="Let's look at the roadmap"
           isWhite={true}
         />
         <Grid sx={styles.grid}>

@@ -7,9 +7,9 @@ import FeatureThumb from 'assets/core-featuretwo.png';
 
 const data = {
   subTitle: 'Chat, collaborate, and create',
-  title: 'Für mich ist die App für folgende User',
+  title: 'Who is the target group of Bitvia?',
   description:
-    'User:1. Security affine User, welche die Daten nicht weitergeben wollen2. Brands, welche mit ihren User direkt kommunizieren können und dabei das UP als ID verwenden3. Creators, welche eine Dienstleistung anbieten (z.B. Verkauf von NFTS) und nicht discord verwenden wollen4. Influencer, welche der Community updates geben will, ohne das die richtige Handynr. angegeben werden muss.',
+    'Bivia is used by security affine users, who do not want to pass on personal data. Creators, brands and influencers use Bitvia to increase the reach of their content and build their own communities. Bitvia is the place where the new creative community meets.'
 };
 
 export default function CoreFeature() {

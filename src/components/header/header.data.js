@@ -8,11 +8,11 @@ export default [
     label: 'Features',
   },
   {
-    path: 'pricing',
-    label: 'Chat DApp',
+    path: 'roadmap',
+    label: 'Roadmap',
   },
   {
-    path: 'testimonial',
-    label: 'Roadmap',
+    path: 'team',
+    label: 'Team',
   },
 ];

@@ -38,12 +38,10 @@ const Banner = () => {
         <Grid sx={styles.grid}>
           <Box sx={styles.content}>
             <Heading as="h3">
-              Bitvia a new way to communicate in the creative economy
+              Bitvia, a new way to communicate in the creative economy
             </Heading>
             <Text as="p">
-              Tired of using Discord? Concerned about privacy in WhatsApp? Use BitVia, the new way to communicate with your community
-
-
+              Tired of using Discord? Concerned about privacy in WhatsApp? Use BitVia, the new way to exchange messages, tokens and NFTs with your community
             </Text>
             <Box as="form" sx={styles.form}>
               <Box as="label" htmlFor="subscribe" variant="styles.srOnly">
@@ -67,7 +65,7 @@ const Banner = () => {
             <Box sx={styles.partner}>
               <Text as="span">Powered by</Text>
               <Box as="div">
-                <Image src={img1} alt="" />
+                <Image src={img1} alt="" width="150px" height="150px" />
               </Box>
             </Box>
           </Box>
