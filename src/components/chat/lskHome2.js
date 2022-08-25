@@ -27,7 +27,7 @@ import { Image } from 'semantic-ui-react'
 import InputEmoji from 'react-input-emoji'
 
 // Add the contract address inside the quotes
-const CONTRACT_ADDRESS = "0x415fDE023C66c4107ac377BB5eD5c9B6D33D1aC4";
+const CONTRACT_ADDRESS = "0x2ba4F98CAcbE1172bC36e71920547D21265a8cd5";
 // const DEFAULT_AVATAR = "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/default-avatar.png"
 const DEFAULT_AVATAR = "logo.svg"
 
