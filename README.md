@@ -1,6 +1,6 @@
 ## Getting Started
 
-Install the dependencies and run the development server
+### Install the dependencies and run the development server
 
 ```bash
 npm install
@@ -10,9 +10,13 @@ yarn
 yarn dev
 ```
 
-```
-docker build -t luksochat .
+### Or run with Docker
 
+Build docker image:
+
+```bash
+docker build -t luksochat .
+#Run and debug:
 docker run -d \
     -p 3001:3000 \
     --name luksochat \
