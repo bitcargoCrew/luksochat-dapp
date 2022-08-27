@@ -1,6 +1,6 @@
 export default [
   {
-    path: 'home',
+    path: 'banner',
     label: 'Home',
   },
   {
@@ -8,11 +8,11 @@ export default [
     label: 'Features',
   },
   {
-    path: 'roadmap',
+    path: 'videoone',
     label: 'Roadmap',
   },
   {
-    path: 'team',
+    path: 'teamsection',
     label: 'Team',
   },
 ];
