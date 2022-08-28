@@ -5,7 +5,7 @@ import { Link } from 'components/link';
 import { FaAngleRight, FaPlay } from 'react-icons/fa';
 import ModalVideo from 'react-modal-video';
 
-import videoImg from 'assets/video.png';
+import videoImg from 'assets/chat_bitvia.png';
 
 const VideoOne = () => {
   const [videoOpen, setVideoOpen] = useState(false);

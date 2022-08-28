@@ -21,7 +21,7 @@ const ModalVideo = dynamic(
   { ssr: false }
 );
 
-import bannerImg from 'assets/banner-image-1-1.png';
+import bannerImg from 'assets/chatTextOnly.png';
 
 const Banner = () => {
   const [videoOpen, setVideoOpen] = useState(false);
@@ -88,7 +88,7 @@ const styles = {
     overflow: 'hidden',
   },
   container: {
-    width: [null, null, null, null, null, null, '1390px'],
+    width: [null, null, null, null, null, null, '1200px'],
   },
   grid: {
     display: 'grid',
@@ -153,8 +153,11 @@ const styles = {
       display: 'flex',
       mixBlendMode: 'darken',
       position: 'relative',
+      padding: ['50px 0px'],
       top: ['0', null, null, null, null, '-40px'],
       maxWidth: ['100%', null, null, null, null, null, 'none'],
+      width: ['630px'],
+      height: ['570px']
     },
   },
   partner: {
