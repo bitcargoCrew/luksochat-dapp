@@ -28,7 +28,7 @@ const VideoOne = () => {
         <Box sx={styles.videoBox}>
           <Image src={videoImg} alt="" />
           <Link
-            path="/"
+            path="https://www.youtube.com/watch?v=zi9asoFRdcc"
             aria-label="video btn"
             onClick={handleClick}
             sx={styles.videoBtn}
