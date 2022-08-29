@@ -27,7 +27,6 @@ export function SeeProfile(props) {
   if (props.fullProfile && props.fullProfile.avatar) {
     avatar = props.fullProfile.avatar;
   }
-  // console.log(props);
 
   return (
     <div

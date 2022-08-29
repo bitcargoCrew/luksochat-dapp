@@ -40,14 +40,12 @@ export function EncrypedHome() {
     if (res === true) {
       provider = new ethers.providers.Web3Provider(window.ethereum);
       signer = provider.getSigner();
-      console.log(signer);
       try {
         const contract = new ethers.Contract(
           CONTRACT_ADDRESS,
           contractABI,
           signer
         );
-        console.log(CONTRACT_ADDRESS);
         
         setMyContract(contract);
         const address = await signer.getAddress();

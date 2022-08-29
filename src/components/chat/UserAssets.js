@@ -13,7 +13,6 @@ export function UserAssets(props) {
   const [selectedToken, setSelectedToken] = useState({});
 
   useEffect(() => {
-    console.log("useEffect 22");
     if (props.address) {
       updateMyAssetList()
     }

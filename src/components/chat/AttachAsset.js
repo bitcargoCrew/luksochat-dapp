@@ -24,10 +24,7 @@ export function AttachAsset(props) {
   }
 
   async function updateMyAssetList() {
-    // console.log("updateMyAssetList");
-    // console.log(props.address);
     const myAls = await getLSP5ReceivedAssets(props.address);
-    // console.log(myAls);
     setMyAssetList(myAls);
   }
 
@@ -39,23 +36,18 @@ export function AttachAsset(props) {
 
       if (selectedTab=="token") {
         var tokenAddress = selectedToken.address;
-        // var amount = parseInt(document.getElementById("amount").value);
 
-        // console.log(tokenAddress + " : " + amount + " : " + toAddr + " "+ tokenAddress);
         const tx = await sendLSP7Token(fromAddr, toAddr, amount, tokenAddress);
 
         await props.sendNoti(props.name+" has just sent "+amount+" "+selectedToken.name+" (LSK7Token) to "+props.currActivFriend.friendname+" at <a href='https://explorer.execution.l16.lukso.network/tx/"+tx.transactionHash+"'>txhash</a>");
         setShow(false);
 
       } else if (selectedTab == "lyx") {
-        // console.log(amount);
-        // console.log( "Send LYX : " + amount + " : " + toAddr + " "+ tokenAddress);
         const tx = await sendLYX(fromAddr, toAddr, amount);
 
         await props.sendNoti(props.name+" has just sent "+amount+" LYX to "+props.currActivFriend.friendname+" at <a href='https://explorer.execution.l16.lukso.network/tx/"+tx.transactionHash+"'>txhash</a>");
         setShow(false);
       } else if (selectedTab == "nft") {
-        // console.log(selectedToken);
         var tokenAddress = selectedToken.address;
         var tokenId = selectedToken.id;
         const tx = await sendLSP8Token(fromAddr, toAddr, tokenId, tokenAddress);
@@ -67,7 +59,6 @@ export function AttachAsset(props) {
       props.setLoadingActive(false)
 
     }catch(e) {
-      console.log(e);
       props.setLoadingActive(false)
     }
   }

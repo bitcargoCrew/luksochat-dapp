@@ -13,29 +13,23 @@ export function VoteManagement(props) {
   const handleShow = () => setShow(true);
 
   async function chooseVote(voteId, value) {
-    // console.log(props.address);
-    // console.log(value);
     handleClose();
     try{
       await props.sendNoti("#vote/vote/"+voteId+"/"+value);
     }catch(e) {
-      console.log(e);
     }
   }
 
   async function stopVote(voteId) {
-    // console.log(props.address);
-    // console.log(value);
+
     handleClose();
     try{
       await props.sendNoti("#vote/close/"+voteId);
     }catch(e) {
-      console.log(e);
     }
   }
 
   function triggerVoteCalculation() {
-    // console.log("Vote Management");
     if (window.vote) {
       var voteList = window.vote;
       var voteLs = voteList.votes;

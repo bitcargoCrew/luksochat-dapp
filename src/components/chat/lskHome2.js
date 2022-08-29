@@ -86,7 +86,6 @@ export default function LskHome() {
 
     web3 = new Web3(window.ethereum);
     web3.eth.handleRevert = true;
-    // console.log(web3);
 
     window.web3 = web3;
 
@@ -98,52 +97,32 @@ export default function LskHome() {
   }
   
   async function autoLogin() {
-    // console.log("autoLogin");
     web3 = new Web3(window.ethereum);
     web3.eth.handleRevert = true;
-    // console.log(web3);
 
     window.web3 = web3;
     
     let address = await web3.eth.getAccounts();
     
-    // console.log(address);
     if (!(address && address[0])) {
       address = await web3.eth.requestAccounts();
     }
     address = address[0];
-    setMyPublicKey(address);
-
-    // console.log(address);
-    
+    setMyPublicKey(address);    
     
     setMyAddress(address);
-    
-    // setConnected(address, "browserExtension");
-    // console.log("done");
-    // console.log(address);
-    
-    // return;
-
-    // let res = await connectToMetamask();
-    // if (res === true) {
-    // provider = web3;
-    // signer = provider.getSigner();
     
     try {
       const contract = new web3.eth.Contract(
         chatDatabaseABI.abi,
         CONTRACT_ADDRESS
       );
-      // console.log(CONTRACT_ADDRESS);
       
       setMyContract(contract);
       
       let present = await contract.methods.checkUserExists(address).call();
       
       let myFProfile = await getProfileData(address);
-      // console.log(myFProfile);
-      // console.log(await fetchProfile(address));
 
       let username;
       if (present) {
@@ -154,12 +133,7 @@ export default function LskHome() {
           from : address
         });
       } else {
-        // username = prompt("Enter a username", "Guest");
-        // if (username === "") username = "Guest";
-        // await contract.methods.createAccount(username).send({
-        //   from : address
-        // });
-        console.log("You do not have universal profile yet, please create one");
+        setShowAlert({show: true, title: "ERROR", content: "You do not have universal profile yet, please create one"});
       }
       
 
@@ -180,8 +154,6 @@ export default function LskHome() {
       // fnRandomGroupId();
       // await makeFriendViaInvitationLink();
     } catch (err) {
-      console.log(err);
-      // alert("CONTRACT_ADDRESS not set properly!");
       setShowAlert({show: true, title: "ERROR", content: err.message});
     }
     // } else {
@@ -191,7 +163,6 @@ export default function LskHome() {
 
   async function makeFriendViaInvitationLink() {
     if (router.query && router.query.invite) {
-      // console.log("makeFriendViaInvitationLink");
       setLoadingActive(true);
 
       await addChat(undefined, router.query.invite);
@@ -201,50 +172,27 @@ export default function LskHome() {
     }
   }
 
-  // async function updateMyAssetList() {
-  //   console.log("updateMyAssetList");
-  //   console.log(myPublicKey);
-  //   const myAls = await getLSP5ReceivedAssets(myPublicKey);
-  //   console.log(myAls);
-  //   setMyAssetList(myAls);
-  // }
-
-  // // Check if the Metamask connects
-  // async function connectToMetamask() {
-  //   try {
-  //     await window.ethereum.enable();
-  //     return true;
-  //   } catch (err) {
-  //     return false;
-  //   }
-  // }
-
   // Add a friend to the users' Friends List
   async function addChat(name, publicKey) {
-    // console.log(myContract);
     try {
       setLoadingActive(true);
 
       let present = await myContract.methods.checkUserExists(publicKey).call();
       if (!present) {
-        // alert("Address not found: Ask them to join the app :)");
         setShowAlert({show: true, title: "ERROR", content: "Address not found: Ask them to join the app :)"});
 
         return;
       }
       try {
-        // console.log("myAddress:"+myAddress+ " > "+present);
 
         var frProfile = await getProfileData(publicKey);
         var userType = 1;
         if (name) {
-          // console.log("name:"+name);
           await myContract.methods.addFriend(publicKey, name).send({
             from : myAddress
           });
         } else {
-          // console.log("add default friend");
-          // console.log(publicKey);
+
           await myContract.methods.addDefaultFriend(publicKey).send({
             from : myAddress
           });
@@ -273,24 +221,17 @@ export default function LskHome() {
 
         frnd.avatar = frAvatar;
 
-        // console.log(friends.concat(frnd));
         setFriends(friends.concat(frnd));
 
         setLoadingActive(false);
 
       } catch (err) {
-        console.log(err);
-        // alert(
-        //   "Friend already added! You can't be friends with the same person twice ;P"
-        // );
         setLoadingActive(false);
 
         setShowAlert({show: true, title: "WARNING", content: "Friend already added!"});
 
       }
     } catch (err) {
-      console.log(err);
-      // alert("Invalid address!");
 
       setLoadingActive(false);
 
@@ -304,9 +245,6 @@ export default function LskHome() {
     try {
       // publicKey = "0x9a5aaD239C4485861B05051bFB506EfdbEe92b25";
       try {
-        // console.log("myAddress:"+myAddress+ " > "+ name, publicKey, isAssetGroup, avatar);
-        // console.log(myContract.methods);
-
         setLoadingActive(true);
 
         try{
@@ -317,21 +255,18 @@ export default function LskHome() {
           setFriends(friends.concat(frnd));
           setLoadingActive(false);
         } catch(err2) {
-          console.log(err2);k
           setLoadingActive(false);
 
           setShowAlert({show: true, title: "INFO", content: "Please check again your input or you have no right to create this group.\nError message:"+err2.message});
         };
 
       } catch (err1) {
-        // console.log(err1);
-        // console.log(err1.message);
+
         setLoadingActive(false);
 
         setShowAlert({show: true, title: "INFO", content: "Your group address is already added.\nError message:"+err1.message});
       }
     } catch (err) {
-      console.log(err);
       setLoadingActive(false);
 
       setShowAlert({show: true, title: "ERROR", content: "Your group address is not valid.\nError message:"+err.message});
@@ -340,11 +275,9 @@ export default function LskHome() {
 
   // Add a friend to the users' Friends List
   async function addNewFriendInGroup(publicKey) {
-    console.log(myContract);
     try {
       // publicKey = "0x9a5aaD239C4485861B05051bFB506EfdbEe92b25";
       try {
-        console.log("myAddress:"+myAddress+ " > "+ publicKey);
         setLoadingActive(true);
 
         await myContract.methods.addMemToGroup(activeChat.publicKey, publicKey).send({
@@ -354,14 +287,10 @@ export default function LskHome() {
         setLoadingActive(false);
 
       } catch (err) {
-        console.log(err);
         setLoadingActive(false);
-
-        // console.log(err.message);
         setShowAlert({show: true, title: "ERROR", content: "We can not add your friend, please check with the group admin"});
       }
     } catch (err) {
-      console.log(err);
       setLoadingActive(false);
 
       setShowAlert({show: true, title: "WARNING", content: "Your friend address is not valid"});
@@ -384,14 +313,12 @@ export default function LskHome() {
       scrollToBottom();
 
     }catch(e) {
-      console.log(e);
       setLoadingActive(false);
       setShowAlert({show: true, title: "WARNING", content: "We can not send your messsage. ERROR:"+e.message});
     }
   }
 
   function getFriendInfor(friendsPublicKey) {
-    // console.log("getFriendInfor:" + friendsPublicKey);
     for (var i in friends) {
       if (friends[i].publicKey === friendsPublicKey) {
         return friends[i];
@@ -407,7 +334,6 @@ export default function LskHome() {
     // #vote/show/id
     // #vote/close/id
     if (data.indexOf("#")==0) {
-      // console.log(data);
       var lsDt = data.split("/");
       if (lsDt[0]=="#vote"){
         if (lsDt[1]=="create") {
@@ -494,116 +420,20 @@ export default function LskHome() {
 
   }
 
-  async function testEncriptData() {
-
-    // web3 = new Web3(window.ethereum);
-    // web3.eth.handleRevert = true;
-    // console.log(web3);
-
-    // window.web3 = web3;
-    
-    // let address = await web3.eth.getAccounts();
-    
-    // console.log(address);
-    
-    // address = await web3.eth.requestAccounts();
-    // console.log(address);
-    // console.log(web3.eth);
-
-    // const keyB64 = await window.ethereum.request({
-    //   method: 'eth_getEncryptionPublicKey',
-    //   params: [account],
-    // });
-    // console.log(account);
-    // console.log(keyB64);
-    // const publicKey = Buffer.from(keyB64, 'base64');
-    // console.log(publicKey);
-
-    // const encryptedData = encryptData(publicKey, "test1234");
-    // console.log(encryptedData);
-    // const decriptedData = await decryptData(account, encryptedData);
-    // console.log(decriptedData);
-    // console.log(decriptedData.toString("base64"));
-  }
-
-  // function encryptData(publicKey, data) {
-  //   // Returned object contains 4 properties: version, ephemPublicKey, nonce, ciphertext
-  //   // Each contains data encoded using base64, version is always the same string
-  //   const bdata = Buffer.from(data, 'base64')
-  //   console.log("bdata");
-  //   console.log(bdata);
-  //   console.log(bdata.toString("base64"));
-  //   console.log(publicKey.toString('base64'));
-  //   const enc = encrypt({
-  //     publicKey: publicKey.toString('base64'),
-  //     data: ascii85.encode(bdata).toString(),
-  //     version: 'x25519-xsalsa20-poly1305',
-  //   });
-  
-  //   // We want to store the data in smart contract, therefore we concatenate them
-  //   // into single Buffer
-  //   const buf = Buffer.concat([
-  //     Buffer.from(enc.ephemPublicKey, 'base64'),
-  //     Buffer.from(enc.nonce, 'base64'),
-  //     Buffer.from(enc.ciphertext, 'base64'),
-  //   ]);
-    
-  //   // In smart contract we are using `bytes[112]` variable (fixed size byte array)
-  //   // you might need to use `bytes` type for dynamic sized array
-  //   // We are also using ethers.js which requires type `number[]` when passing data
-  //   // for argument of type `bytes` to the smart contract function
-  //   // Next line just converts the buffer to `number[]` required by contract function
-  //   // THIS LINE IS USED IN OUR ORIGINAL CODE:
-  //   // return buf.toJSON().data;
-    
-  //   // Return just the Buffer to make the function directly compatible with decryptData function
-  //   return buf;
-  // }
-
-  // async function decryptData(account, data) {
-  //   // Reconstructing the original object outputed by encryption
-  //   const structuredData = {
-  //     version: 'x25519-xsalsa20-poly1305',
-  //     ephemPublicKey: data.slice(0, 32).toString('base64'),
-  //     nonce: data.slice(32, 56).toString('base64'),
-  //     ciphertext: data.slice(56).toString('base64'),
-  //   };
-  //   // Convert data to hex string required by MetaMask
-  //   const ct = `0x${Buffer.from(JSON.stringify(structuredData), 'utf8').toString('hex')}`;
-  //   // Send request to MetaMask to decrypt the ciphertext
-  //   // Once again application must have acces to the account
-  //   const decrypt = await window.ethereum.request({
-  //     method: 'eth_decrypt',
-  //     params: [ct, account],
-  //   });
-  //   // Decode the base85 to final bytes
-  //   return ascii85.decode(decrypt);
-  // }
-
-  // This executes every time page renders and when myPublicKey or myContract changes
-
   async function loadFriends() {
-    // console.log("loadFriends");
     let friendList = [];
     // Get Friends
     try {
-      // let allData = await myContract.methods["0x3b9f708d"].call();
-      // console.log(allData);
-      // const data1 = await myContract.methods.getAnyUser(myAddress).call();
-      
-      // console.log(data1);
       
       setLoadingActive(true);
 
       const data = await myContract.methods.getMyFriendList().call({
         from : myAddress
       });
-      // console.log(data);
       data.forEach((item) => {
         friendList.push({ publicKey: item[0], name: item[1], userType : parseInt(item[2]) });
       });
 
-      // console.log(friendList);
       for (var f in friendList) {
         var frProfile = await getProfileData(friendList[f].publicKey);
         friendList[f].profile = frProfile;
