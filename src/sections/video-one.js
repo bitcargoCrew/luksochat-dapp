@@ -26,15 +26,7 @@ const VideoOne = () => {
         </Text>
 
         <Box sx={styles.videoBox}>
-          <Image src={videoImg} alt="" />
-          <Link
-            path="/watch?v=zi9asoFRdcc"
-            aria-label="video btn"
-            onClick={handleClick}
-            sx={styles.videoBtn}
-          >
-            <FaPlay />
-          </Link>
+          <iframe width="800" height="500" src="https://www.youtube.com/embed/zi9asoFRdcc" title="Bitvia Hackathon" frameborder="0"  allowfullscreen></iframe>
         </Box>
       </Container>
       <ModalVideo
