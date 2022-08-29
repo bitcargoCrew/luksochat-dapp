@@ -1,8 +1,8 @@
 ## Bitvia, a new way to communicate in the creative industry
 
-```bash
-Bitvia offers a new way for a creators, brands and influencers to exchange messages, tokens and NFTs via a decentralized chat application. It is the place where the new creative community meets.
-```
+Bitvia offers a new way for a creators, brands and influencers to exchange messages,
+tokens and NFTs via a decentralized chat application. It is the place where the new
+creative community meets.
 
 ## Getting Started
 
