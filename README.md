@@ -4,6 +4,14 @@ Bitvia offers a new way for a creators, brands and influencers to exchange messa
 tokens and NFTs via a decentralized chat application. It is the place where the new
 creative community meets.
 
+Check it out: https://www.youtube.com/watch?v=zi9asoFRdcc
+
+## Team
+
+Sandro Rüttimann - sr_social@outlook.com
+Roger Heines - roger.heines@gmail.com
+Van Thanh Le - levanthanh3005@gmail.com
+
 ## Getting Started
 
 ### Install the dependencies and run the development server
